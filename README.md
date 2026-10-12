@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ecommerce Keystation
 
-## Getting Started
+Repositório do projeto da A3 de Usabilidade, desenvolvimento web, mobile e jogos
 
-First, run the development server:
+## Tecnologias
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Frontend:** Node,js, Next.js, TypeScript, React, Css Modules (BEM) \
+**Backend:** Node.js, Next.js, TypeScript, Prisma (ORM), Zod\
+**Banco de Dados:** PostgreSQL
+
+## Organização de pastas
+
+### Frontend
+
+`src/app/` onde as páginas e features ficam por módulo\
+`src/components/` componentes reutilizáveis\
+`src/utils/` funções reutilizáveis como formatadores e validadores
+
+### Backend
+
+`src/core/modules` regras de negócio (services)\
+`prisma/` schemas e migrations do banco de dados\
+`src/infra/` pasta com as ferramentas de infraestrutura usadas no projeto
+
+## Como rodar:
+
+Clone o repositório, e instale a versão do node que está no arquivo .nvmrc
+
+### Frontend:
+
+dê o comando para instalar as dependências:
+
+``` bash
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+e depois rode:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+``` bash
+npm run dev
+``` 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+As páginas que consultam dados precisam do banco; veja a seção Backend.
 
-## Learn More
+### Backend:
 
-To learn more about Next.js, take a look at the following resources:
+o servidor do backend e do frontend é o mesmo, rodando `npm run dev` os dois já sobem.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Copie o arquivo .env.example como .env e depois substitua as variáveis de ambiente
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+após isso execute o comando do docker para subir o banco de dados:
 
-## Deploy on Vercel
+``` bash
+docker compose up -d
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+e execute para iniciar as migrations e os dados de exemplo
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+``` bash
+npx prisma migrate dev      # cria as tabelas
+npx prisma db seed         # dados de exemplo
+```
