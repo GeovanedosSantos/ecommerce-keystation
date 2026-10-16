@@ -1,0 +1,56 @@
+enum CouponDiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+
+  @@map("discount_type")
+}
+
+model Promotion {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  startsAt    DateTime @map("starts_at") @db.Timestamptz(6)
+  endsAt      DateTime @map("ends_at") @db.Timestamptz(6)
+  isActive    Boolean  @default(true) @map("is_active")
+
+  products PromotionProduct[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("promotion")
+}
+
+model PromotionProduct {
+  promotionId     String @map("promotion_id") @db.Uuid
+  productId       String @map("product_id") @db.Uuid
+  discountPercent Int    @map("discount_percent") @db.SmallInt // 1 a 99, validado no Zod
+
+  promotion Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+  @@index([productId])
+  @@map("promotion_product")
+}
+
+model Coupon {
+  id             String             @id @default(uuid(7)) @db.Uuid
+  code           String             @unique @db.VarChar(50) // salvo em maiúsculas
+  discountType   CouponDiscountType @map("discount_type")
+  discountValue  Decimal            @map("discount_value") @db.Decimal(10, 2)
+  minOrderAmount Decimal?           @map("min_order_amount") @db.Decimal(10, 2)
+  maxUses        Int?               @map("max_uses")
+  maxUsesPerUser Int?               @map("max_uses_per_user") @db.SmallInt
+  startsAt       DateTime?          @map("starts_at") @db.Timestamptz(6)
+  endsAt         DateTime?          @map("ends_at") @db.Timestamptz(6)
+  isActive       Boolean            @default(true) @map("is_active")
+
+  orders Order[]
+  carts  ShoppingCart[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("coupon")
+}
