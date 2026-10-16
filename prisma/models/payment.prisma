@@ -1,0 +1,28 @@
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+
+  @@map("payment_status")
+}
+
+model Payment {
+  id                    String        @id @default(uuid(7)) @db.Uuid
+  orderId               String        @map("order_id") @db.Uuid
+  status                PaymentStatus @default(PENDING)
+  amount                Decimal       @db.Decimal(10, 2)
+  currency              String        @default("brl") @db.VarChar(3)
+  method                String?       @db.VarChar(30) // card, pix, boleto...
+  stripePaymentIntentId String?       @unique @map("stripe_payment_intent_id") @db.VarChar(100)
+  failureReason         String?       @map("failure_reason") @db.VarChar(255)
+  paidAt                DateTime?     @map("paid_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@map("payment")
+}

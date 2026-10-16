@@ -1,0 +1,28 @@
+model ShoppingCart {
+  id       String  @id @default(uuid(7)) @db.Uuid
+  userId   String  @unique @map("user_id") @db.Uuid
+  couponId String? @map("coupon_id") @db.Uuid
+
+  user   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon Coupon?            @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  items  ShoppingCartItem[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([couponId])
+  @@map("shopping_cart")
+}
+
+model ShoppingCartItem {
+  cartId    String   @map("cart_id") @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  addedAt   DateTime @default(now()) @map("added_at") @db.Timestamptz(6)
+
+  cart    ShoppingCart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([cartId, productId])
+  @@index([productId])
+  @@map("shopping_cart_item")
+}

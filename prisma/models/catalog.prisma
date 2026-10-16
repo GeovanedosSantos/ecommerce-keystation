@@ -1,0 +1,55 @@
+enum Category {
+  GAME
+  DLC
+  SPECIAL_EDITION
+
+  @@map("category")
+}
+
+model Genre {
+  id    String        @id @default(uuid(7)) @db.Uuid()
+  name  String        @unique @db.VarChar(100)
+  items CatalogItem[] @relation("item_genre")
+
+  @@map("genre")
+}
+
+model CatalogItem {
+  id               String   @id @default(uuid(7)) @db.Uuid
+  category         Category
+  title            String   @db.VarChar(200)
+  slug             String   @unique @db.VarChar(255)
+  description      String
+  developer        String?  @db.VarChar(150)
+  publisher        String?  @db.VarChar(150)
+  releaseDate      DateTime @map("release_date") @db.Date
+  coverPath        String?  @map("cover_path") @db.VarChar(255)
+  trailerYoutubeId String?  @map("trailer_youtube_id") @db.VarChar(11)
+
+  baseItemId String?       @map("base_item_id") @db.Uuid
+  baseItem   CatalogItem?  @relation("ItemAddons", fields: [baseItemId], references: [id], onDelete: Restrict)
+  addons     CatalogItem[] @relation("ItemAddons")
+
+  genres             Genre[]       @relation("item_genre")
+  products           Product[]
+  systemRequirements Json?         @map("system_requirements")
+  gallery            ItemGallery[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([baseItemId])
+  @@map("catalog_item")
+}
+
+model ItemGallery {
+  id       String @id @default(uuid(7)) @db.Uuid
+  itemId   String @map("item_id") @db.Uuid
+  path     String @db.VarChar(255)
+  position Int    @db.SmallInt
+
+  item CatalogItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, position])
+  @@map("item_gallery")
+}

@@ -1,0 +1,65 @@
+enum OrderStatus {
+  PROCESSING
+  PENDING
+  FAILED
+  CANCELED
+  REFUNDED
+  PAID
+
+  @@map("order_status")
+}
+
+enum OrderItemStatus {
+  PENDING
+  DELIVERED
+  REFUNDED
+
+  @@map("order_item_status")
+}
+
+model Order {
+  id     String @id @default(uuid(7)) @db.Uuid()
+  number String @unique @db.VarChar(20)
+
+  status OrderStatus @default(PENDING)
+
+  subtotal       Decimal @db.Decimal(10, 2)
+  discountAmount Decimal @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  total          Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  paidAt    DateTime? @map("paid_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  userId String @map("user_id") @db.Uuid()
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  items      OrderItem[]
+  payments   Payment[]
+  couponId   String?     @map("coupon_id") @db.Uuid
+  couponCode String?     @map("coupon_code") @db.VarChar(50)
+  coupon     Coupon?     @relation(fields: [couponId], references: [id], onDelete: Restrict)
+  tickets    Ticket[]
+
+  @@index([userId])
+  @@map("order")
+}
+
+model OrderItem {
+  id             String          @id @default(uuid(7)) @db.Uuid
+  orderId        String          @map("order_id") @db.Uuid
+  productId      String          @map("product_id") @db.Uuid
+  status         OrderItemStatus @default(PENDING)
+  originalPrice  Decimal         @map("original_price") @db.Decimal(10, 2)
+  paidPrice      Decimal         @map("paid_price") @db.Decimal(10, 2)
+  refundedAmount Decimal?        @map("refunded_amount") @db.Decimal(10, 2)
+  refundedAt     DateTime?       @map("refunded_at") @db.Timestamptz(6)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  key     Key?
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_item")
+}

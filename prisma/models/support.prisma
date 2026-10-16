@@ -1,0 +1,76 @@
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  CLOSED
+
+  @@map("ticket_status")
+}
+
+model TicketCategory {
+  id          String  @id @default(uuid(7)) @db.Uuid
+  name        String  @unique @db.VarChar(100)
+  description String? @db.VarChar(255)
+  isActive    Boolean @default(true) @map("is_active")
+
+  tickets Ticket[]
+
+  @@map("ticket_category")
+}
+
+model Ticket {
+  id         String       @id @default(uuid(7)) @db.Uuid
+  number     String       @unique @db.VarChar(20)
+  subject    String       @db.VarChar(150)
+  status     TicketStatus @default(OPEN)
+  userId     String       @map("user_id") @db.Uuid
+  categoryId String       @map("category_id") @db.Uuid
+  orderId    String?      @map("order_id") @db.Uuid
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  category TicketCategory  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  order    Order?          @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  messages TicketMessage[]
+
+  closedAt  DateTime? @map("closed_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([orderId])
+  @@map("ticket")
+}
+
+model TicketMessage {
+  id       String @id @default(uuid(7)) @db.Uuid
+  ticketId String @map("ticket_id") @db.Uuid
+  authorId String @map("author_id") @db.Uuid
+  body     String @db.Text
+
+  ticket      Ticket             @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author      User               @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  attachments TicketAttachment[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([ticketId, createdAt])
+  @@index([authorId])
+  @@map("ticket_message")
+}
+
+model TicketAttachment {
+  id        String @id @default(uuid(7)) @db.Uuid
+  messageId String @map("message_id") @db.Uuid
+  path      String @db.VarChar(255)
+  fileName  String @map("file_name") @db.VarChar(255)
+  mimeType  String @map("mime_type") @db.VarChar(100)
+  sizeBytes Int    @map("size_bytes")
+
+  message TicketMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([messageId])
+  @@map("ticket_attachment")
+}

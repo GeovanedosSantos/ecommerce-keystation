@@ -1,0 +1,60 @@
+enum ProductStatus {
+  PUBLISHED
+  DISABLED
+
+  @@map("product_status")
+}
+
+enum KeyStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+
+  @@map("key_status")
+}
+
+model Platform {
+  id   String @id @default(uuid(7)) @db.Uuid()
+  name String @unique @db.VarChar(100)
+
+  products Product[]
+
+  @@map("platform")
+}
+
+model Product {
+  id String @id @default(uuid(7)) @db.Uuid()
+
+  itemId String      @map("item_id") @db.Uuid()
+  item   CatalogItem @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  platformId String   @map("platform_id") @db.Uuid()
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  price  Decimal       @db.Decimal(10, 2)
+  status ProductStatus @default(DISABLED)
+
+  keys       Key[]
+  orderItems OrderItem[]
+  cartItems  ShoppingCartItem[]
+  promotions PromotionProduct[]
+
+  @@unique([itemId, platformId])
+  @@map("product")
+}
+
+model Key {
+  id          String     @id @default(uuid(7)) @db.Uuid()
+  productId   String     @map("product_id") @db.Uuid()
+  product     Product    @relation(fields: [productId], references: [id])
+  status      KeyStatus  @default(AVAILABLE)
+  keyCode     String     @unique @map("key_code") @db.VarChar(100)
+  orderItemId String?    @unique @map("order_item_id") @db.Uuid()
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+  soldAt      DateTime?  @map("sold_at") @db.Timestamptz(6)
+  revealedAt  DateTime?  @map("revealed_at") @db.Timestamptz(6)
+
+  @@index([productId])
+  @@index([orderItemId])
+  @@map("key")
+}
