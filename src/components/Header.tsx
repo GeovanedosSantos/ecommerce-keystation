@@ -1,45 +1,43 @@
 import Link from "next/link";
-import { ShoppingCart, User, Search, KeyRound, ShieldCheck } from "lucide-react";
+import { ShoppingCart, User } from "lucide-react";
 import styles from "./Header.module.css";
+import { HeaderContent } from "./HeaderContent";
 
-export function Header() {
-  return (
-    <header className={styles.header}>
-      <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
-          <KeyRound className={styles.logoIcon} />
-          <span>Keystation</span>
-        </Link>
-
-        <div className={styles.searchBar}>
-          <Search className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Buscar jogos, desenvolvedoras..."
-            className={styles.searchInput}
-          />
-        </div>
-
-        <nav className={styles.nav}>
-          <Link href="/catalog" className={styles.navLink}>
-            Catálogo
-          </Link>
-          <Link href="/support" className={styles.navLink}>
-            Suporte
-          </Link>
-          <Link href="/account/vault" className={styles.navLink}>
-            <KeyRound size={18} />
-            <span>Cofre</span>
-          </Link>
-          <Link href="/cart" className={styles.cartBtn} aria-label="Carrinho">
+function UserButtons({isLogged, cartCount}: { isLogged: boolean, cartCount: number }) {
+  if (isLogged) {
+    return (
+        <div className={styles.nav}>
+          <Link
+            href="/cart"
+            className={styles.cartBtn}
+            aria-label={cartCount > 0 ? `Carrinho, ${cartCount} ${cartCount === 1 ? "item" : "itens"}` : "Carrinho"}
+          >
             <ShoppingCart size={20} />
-            <span className={styles.cartBadge}>2</span>
+            {cartCount > 0 && <span className={styles.cartBadge} aria-hidden="true">{cartCount}</span>}
           </Link>
-          <Link href="/login" className={styles.userBtn} aria-label="Conta">
+          <Link href="/account/vault" className={styles.userBtn} aria-label="Conta">
             <User size={20} />
           </Link>
-        </nav>
-      </div>
+        </div>
+    )
+  }
+
+  return (
+    <div className={styles.nav}>
+      <Link href="/login" className={styles.loginButton}>
+        Entrar
+      </Link>
+    </div>
+  )
+}
+
+export function Header() {
+  const isLogged = true
+  const cartCount = 2
+
+  return (
+    <header className={styles.header}>
+      <HeaderContent userButtons={<UserButtons isLogged={isLogged} cartCount={cartCount} />} />
     </header>
   );
 }
