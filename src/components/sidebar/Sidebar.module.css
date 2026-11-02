@@ -1,7 +1,7 @@
 /* Breakpoint mobile/desktop: 768px / 769px. Manter em sincronia com MOBILE_QUERY em SidebarProvider.tsx e com Header.module.css. */
 
-/* No desktop o botão e o logo ficam na Header e o painel com os links fica abaixo dela.
-   Desktop: o sidebar é uma coluna ao lado do conteúdo. Ao abrir, a largura cresce e empurra o conteúdo. */
+/* Desktop: o sidebar é uma coluna abaixo da Header, ao lado do conteúdo. Ao abrir, a largura cresce e
+   empurra o conteúdo. O botão e o logo são os da Header. */
 .shell {
   flex: 1;
   display: flex;
@@ -47,12 +47,8 @@
   transform: none;
 }
 
-/* Só no mobile: o sidebar cobre a Header e leva o próprio botão e logo, nas mesmas medidas dela. */
-.top {
-  display: none;
-}
-
-.toggle {
+/* SidebarButton: usado na Header e no topo do overlay mobile. */
+.sidebarButton {
   display: flex;
   flex-shrink: 0;
   background: transparent;
@@ -61,23 +57,18 @@
   transition: color 0.2s;
 }
 
-.toggle:hover {
+.sidebarButton:hover {
   color: var(--primary-hover);
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-main);
-  white-space: nowrap;
+.sidebarButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
-.logoIcon {
-  flex-shrink: 0;
-  color: var(--primary);
+/* Só no mobile: o overlay cobre a Header e leva o SidebarButton e o Logo no mesmo lugar dos dela. */
+.top {
+  display: none;
 }
 
 .list {
@@ -146,8 +137,6 @@
   background-color: var(--primary);
 }
 
-.toggle:focus-visible,
-.logo:focus-visible,
 .link:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -157,7 +146,7 @@
   display: none;
 }
 
-/* Mobile: o sidebar vira overlay por cima de tudo, inclusive da Header, e não empurra nada. */
+/* Mobile: o sidebar vira overlay por cima de tudo, inclusive da Header (z-index 100), e não empurra nada. */
 @media (max-width: 768px) {
   .sidebar,
   .sidebarOpen {
@@ -180,13 +169,14 @@
     width: 100%;
   }
 
+  /* Mesmas medidas da Header mobile (Header.module.css), para o botão e o logo ficarem no mesmo lugar. */
   .top {
     display: flex;
     align-items: center;
     gap: 1rem;
     height: var(--header-height);
-    padding: 0 1rem;
-    /* Mesma linha da borda da Header, que o sidebar cobre. */
+    padding: 0.5rem 1rem;
+    /* Mesma linha da borda da Header, que o overlay cobre. */
     border-bottom: 1px solid var(--border-color);
   }
 
@@ -210,7 +200,7 @@
 @media (max-width: 400px) {
   .top {
     gap: 0.5rem;
-    padding: 0 0.75rem;
+    padding: 0.5rem 0.75rem;
   }
 }
 
