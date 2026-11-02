@@ -9,6 +9,18 @@
   --success: #10B981;
   --danger: #EF4444;
   --border-color: #334155;
+  /* Altura da Header e do topo do Sidebar: a borda dos dois precisa ficar na mesma linha. */
+  --header-height: 5rem;
+  --sidebar-width: 16rem;
+  /* Animação do sidebar: a Header e o Sidebar usam a mesma, para o empurrão e o painel andarem juntos. */
+  --sidebar-duration: 0.35s;
+  --sidebar-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 3.75rem;
+  }
 }
 
 html {

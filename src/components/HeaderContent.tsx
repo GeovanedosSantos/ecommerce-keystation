@@ -6,11 +6,15 @@ import { Search, KeyRound, Menu, ChevronLeft } from "lucide-react";
 import styles from "./Header.module.css";
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import { SIDEBAR_ID, useSidebar } from "./sidebar/SidebarContext";
 
 const SEARCH_ID = "header-search";
 
 export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
   const pathname = usePathname()
+  const sidebar = useSidebar()
+  // Mobile: o sidebar cobre a header, então nada dela pode receber foco por baixo.
+  const covered = sidebar.isOpen && sidebar.isMobile
   const [isOpen, setOpen] = useState(false)
   const [lastPathname, setLastPathname] = useState(pathname)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -51,8 +55,13 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
 
   return (
     <>
-      <div className={styles.wrapperLeft} inert={isOpen}>
-        <button type="button" className={styles.sidebarButton} aria-label="Abrir Barra Lateral">
+      <div
+        className={`${styles.wrapperLeft} ${sidebar.isOpen ? styles.wrapperLeftOpen : ''}`}
+        inert={isOpen || covered}
+      >
+        <button ref={sidebar.triggerRef} type="button" className={styles.sidebarButton}
+          aria-label={sidebar.isOpen ? "Fechar Barra Lateral" : "Abrir Barra Lateral"}
+          aria-expanded={sidebar.isOpen} aria-controls={SIDEBAR_ID} onClick={sidebar.toggle}>
           <Menu size={20} />
         </button>
         <Link href="/" className={styles.logo} aria-label="Keystation">
@@ -88,7 +97,7 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
         </div>
       </Form>
 
-      <div className={styles.wrapperRight} inert={isOpen}>
+      <div className={styles.wrapperRight} inert={isOpen || covered}>
         <button ref={openButtonRef} type="button" className={styles.searchButton} aria-label="Abrir Busca"
           aria-expanded={isOpen} aria-controls={SEARCH_ID} onClick={openSearch}>
           <Search size={20} />

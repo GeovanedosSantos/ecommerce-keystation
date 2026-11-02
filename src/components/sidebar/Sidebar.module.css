@@ -1,0 +1,224 @@
+/* Breakpoint mobile/desktop: 768px / 769px. Manter em sincronia com MOBILE_QUERY em SidebarProvider.tsx e com Header.module.css. */
+
+/* No desktop o botão e o logo ficam na Header e o painel com os links fica abaixo dela.
+   Desktop: o sidebar é uma coluna ao lado do conteúdo. Ao abrir, a largura cresce e empurra o conteúdo. */
+.shell {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--header-height);
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: 0;
+  height: calc(100dvh - var(--header-height));
+  transition: width var(--sidebar-duration) var(--sidebar-ease);
+}
+
+.sidebarOpen {
+  width: var(--sidebar-width);
+}
+
+/* O painel desliza para dentro junto com a largura (mesmo tempo da animação da Header). */
+.panel {
+  width: var(--sidebar-width);
+  height: 100%;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateX(-100%) scale(0.96);
+  transform-origin: left center;
+  transition: transform var(--sidebar-duration) var(--sidebar-ease), opacity 0.2s ease;
+}
+
+.sidebarOpen .panel {
+  opacity: 1;
+  transform: none;
+}
+
+/* Só no mobile: o sidebar cobre a Header e leva o próprio botão e logo, nas mesmas medidas dela. */
+.top {
+  display: none;
+}
+
+.toggle {
+  display: flex;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  transition: color 0.2s;
+}
+
+.toggle:hover {
+  color: var(--primary-hover);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.logoIcon {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 0.75rem;
+}
+
+.link {
+  opacity: 0;
+  transform: translateX(-0.75rem);
+  transition: background-color 0.2s, color 0.2s, opacity 0.2s ease, transform var(--sidebar-duration) var(--sidebar-ease);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sidebarOpen .link {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s, 0s, calc(var(--i) * 50ms + 120ms), calc(var(--i) * 50ms + 120ms);
+}
+
+.link:hover {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+.linkIcon {
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.link:hover .linkIcon {
+  color: var(--primary);
+}
+
+.linkActive,
+.linkActive:hover {
+  background-color: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.linkActive .linkIcon {
+  color: var(--primary);
+}
+
+/* Barra lateral que marca a página atual. */
+.linkActive::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--primary);
+}
+
+.toggle:focus-visible,
+.logo:focus-visible,
+.link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.backdrop {
+  display: none;
+}
+
+/* Mobile: o sidebar vira overlay por cima de tudo, inclusive da Header, e não empurra nada. */
+@media (max-width: 768px) {
+  .sidebar,
+  .sidebarOpen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    width: min(18rem, 85vw);
+    height: 100dvh;
+    transition: none;
+    /* Sem fundo próprio, o aside fechado não pode interceptar cliques na página. */
+    pointer-events: none;
+  }
+
+  .sidebarOpen {
+    pointer-events: auto;
+  }
+
+  .panel {
+    width: 100%;
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: var(--header-height);
+    padding: 0 1rem;
+    /* Mesma linha da borda da Header, que o sidebar cobre. */
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    background-color: color-mix(in srgb, var(--bg-main) 70%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--sidebar-duration) ease;
+  }
+
+  .backdropOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .top {
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .panel,
+  .link,
+  .backdrop {
+    transition: none;
+  }
+}
