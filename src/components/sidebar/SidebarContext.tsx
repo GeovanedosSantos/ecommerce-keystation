@@ -8,9 +8,9 @@ export type SidebarContextValue = {
   isMobile: boolean
   toggle: () => void
   close: () => void
-  /** Botão da Header que abre e fecha o sidebar. Recebe o foco de volta ao fechar com Esc. */
+  /** Botão da Header que abre e fecha o sidebar. Recebe o foco de volta quando o sidebar fecha com o foco dentro dele. */
   triggerRef: RefObject<HTMLButtonElement | null>
-  /** Botão de fechar do topo do sidebar (só existe no mobile). Recebe o foco quando o overlay abre. */
+  /** Botão do topo do sidebar (só aparece no mobile, onde o overlay cobre a Header). Recebe o foco quando o overlay abre. */
   closeButtonRef: RefObject<HTMLButtonElement | null>
 }
 

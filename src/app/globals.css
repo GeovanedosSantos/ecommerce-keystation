@@ -9,7 +9,7 @@
   --success: #10B981;
   --danger: #EF4444;
   --border-color: #334155;
-  /* Altura da Header e do topo do Sidebar: a borda dos dois precisa ficar na mesma linha. */
+  /* Altura da Header. Desktop: o Sidebar começa logo abaixo dela. Mobile: o topo do overlay usa a mesma altura. */
   --header-height: 5rem;
   --sidebar-width: 16rem;
   /* Animação do sidebar: a Header e o Sidebar usam a mesma, para o empurrão e o painel andarem juntos. */

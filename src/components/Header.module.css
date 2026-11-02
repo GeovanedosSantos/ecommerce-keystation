@@ -1,4 +1,4 @@
-/* Breakpoint mobile/desktop: 768px / 769px. Manter em sincronia com o matchMedia em HeaderContent.tsx. */
+/* Breakpoint mobile/desktop: 768px / 769px. Manter em sincronia com MOBILE_QUERY em sidebar/SidebarProvider.tsx. */
 .header {
   background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
@@ -35,21 +35,6 @@
 
 .wrapperLeftOpen {
   min-width: calc(var(--sidebar-width) - 2rem);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-main);
-  white-space: nowrap;
-}
-
-.logoIcon {
-  flex-shrink: 0;
-  color: var(--primary);
 }
 
 .searchBar {
@@ -162,27 +147,15 @@
   display: none;
 }
 
-.sidebarButton {
-  display: flex;
-  flex-shrink: 0;
-  background: transparent;
-  border: none;
-  color: var(--primary);
-  transition: color 0.2s;
-}
-
-.sidebarButton:hover,
 .searchButton:hover {
   color: var(--primary-hover);
 }
 
-.sidebarButton:focus-visible,
 .searchButton:focus-visible,
 .searchToggle:focus-visible,
 .cartBtn:focus-visible,
 .userBtn:focus-visible,
-.loginButton:focus-visible,
-.logo:focus-visible {
+.loginButton:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
@@ -249,12 +222,6 @@
   .wrapperRight,
   .nav {
     gap: 0.5rem;
-  }
-}
-
-@media (max-width: 340px) {
-  .logoText {
-    display: none;
   }
 }
 

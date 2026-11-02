@@ -1,41 +1,33 @@
 'use client'
 import Form from "next/form";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Search, KeyRound, Menu, ChevronLeft } from "lucide-react";
+import { Search, ChevronLeft } from "lucide-react";
 import styles from "./Header.module.css";
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
-import { SIDEBAR_ID, useSidebar } from "./sidebar/SidebarContext";
+import { Logo } from "./Logo";
+import { OnNavigate } from "./OnNavigate";
+import { SidebarButton } from "./sidebar/Sidebar";
+import { useSidebar } from "./sidebar/SidebarContext";
 
 const SEARCH_ID = "header-search";
 
 export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
-  const pathname = usePathname()
   const sidebar = useSidebar()
-  // Mobile: o sidebar cobre a header, então nada dela pode receber foco por baixo.
+  // Mobile: o sidebar cobre a Header, então nada dela pode receber foco por baixo dele.
   const covered = sidebar.isOpen && sidebar.isMobile
   const [isOpen, setOpen] = useState(false)
-  const [lastPathname, setLastPathname] = useState(pathname)
   const inputRef = useRef<HTMLInputElement>(null)
   const openButtonRef = useRef<HTMLButtonElement>(null)
 
-  if (pathname !== lastPathname) {
-    setLastPathname(pathname)
+  // A busca fecha em qualquer navegação. O usePathname fica no OnNavigate, dentro de um <Suspense>,
+  // para a Header não suspender em rotas dinâmicas como /products/[id].
+  const closeOnNavigate = useCallback(() => setOpen(false), [])
+
+  // Os itens atrás da busca ficam inert, então ela não pode continuar aberta no desktop.
+  // Usa o mesmo isMobile do sidebar para os dois nunca discordarem do breakpoint.
+  if (isOpen && !sidebar.isMobile) {
     setOpen(false)
   }
-
-  // Os itens atrás do overlay ficam inert, então ele não pode continuar aberto no desktop.
-  useEffect(() => {
-    // Mesmo breakpoint do Header.module.css (max-width: 768px).
-    const desktop = window.matchMedia("(min-width: 769px)")
-    const closeOnDesktop = () => {
-      if (desktop.matches) setOpen(false)
-    }
-
-    desktop.addEventListener("change", closeOnDesktop)
-    return () => desktop.removeEventListener("change", closeOnDesktop)
-  }, [])
 
   // O input só pode receber foco depois de sair do display: none, e o iOS só abre
   // o teclado se o focus() acontecer durante o clique. Por isso o flushSync.
@@ -50,24 +42,21 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
   }
 
   function handleSearchKeyDown(event: KeyboardEvent<HTMLFormElement>) {
-    if (event.key === "Escape" && isOpen) closeSearch()
+    if (event.key !== "Escape" || !isOpen) return
+    // Marca o Esc como tratado: o SidebarProvider ignora e o sidebar mobile continua aberto.
+    event.preventDefault()
+    closeSearch()
   }
 
   return (
     <>
+      <OnNavigate onNavigate={closeOnNavigate} />
       <div
         className={`${styles.wrapperLeft} ${sidebar.isOpen ? styles.wrapperLeftOpen : ''}`}
         inert={isOpen || covered}
       >
-        <button ref={sidebar.triggerRef} type="button" className={styles.sidebarButton}
-          aria-label={sidebar.isOpen ? "Fechar Barra Lateral" : "Abrir Barra Lateral"}
-          aria-expanded={sidebar.isOpen} aria-controls={SIDEBAR_ID} onClick={sidebar.toggle}>
-          <Menu size={20} />
-        </button>
-        <Link href="/" className={styles.logo} aria-label="Keystation">
-          <KeyRound className={styles.logoIcon} />
-          <span className={styles.logoText}>Keystation</span>
-        </Link>
+        <SidebarButton ref={sidebar.triggerRef} />
+        <Logo />
       </div>
 
       <Form
