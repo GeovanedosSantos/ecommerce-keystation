@@ -5,6 +5,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  height: var(--header-height);
   padding: 1rem 2rem;
 
   display: flex;
@@ -24,6 +25,16 @@
 
 .wrapperRight {
   justify-content: flex-end;
+}
+
+/* Desktop, sidebar aberto: a área do botão e do logo fica dentro do sidebar
+   e empurra a busca e o resto da header para a direita. */
+.wrapperLeft {
+  transition: min-width var(--sidebar-duration) var(--sidebar-ease);
+}
+
+.wrapperLeftOpen {
+  min-width: calc(var(--sidebar-width) - 2rem);
 }
 
 .logo {
@@ -177,6 +188,10 @@
 }
 
 @media (max-width: 768px) {
+  .wrapperLeftOpen {
+    min-width: 0;
+  }
+
   .searchBar {
     display: none;
   }
@@ -211,6 +226,8 @@
     display: flex;
     position: absolute;
     inset: 0;
+    /* Os botões de carrinho/conta também têm position e vêm depois no DOM: sem z-index eles ficam por cima da busca. */
+    z-index: 1;
     padding: 0 1rem;
     gap: 0.5rem;
     background-color: var(--bg-surface);
@@ -238,5 +255,11 @@
 @media (max-width: 340px) {
   .logoText {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrapperLeft {
+    transition: none;
   }
 }
