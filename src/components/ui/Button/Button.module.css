@@ -1,0 +1,79 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
+}
+
+.inline {
+  width: fit-content;
+}
+
+/* Tamanhos */
+.sm {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.md {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.lg {
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* Botão só com ícone */
+.icon {
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+/* Variantes */
+.primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.secondary:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.success {
+  background-color: var(--success);
+  color: white;
+}
+
+.success:hover {
+  opacity: 0.9;
+}
+
+/* Sem fundo; vermelho no hover (ex.: remover item). */
+.danger {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.danger:hover {
+  color: var(--danger);
+}

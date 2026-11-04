@@ -1,0 +1,36 @@
+.price {
+  display: flex;
+  flex-direction: column;
+}
+
+.original {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+.current {
+  color: var(--success);
+}
+
+.sm .original {
+  font-size: 0.75rem;
+}
+
+.sm .current {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.md .current {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.lg .original {
+  font-size: 0.85rem;
+}
+
+.lg .current {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
