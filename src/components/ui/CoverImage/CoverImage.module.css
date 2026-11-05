@@ -1,0 +1,65 @@
+.cover {
+  position: relative;
+  display: block;
+  background-color: var(--bg-main);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Tamanhos */
+.card {
+  width: 100%;
+  height: 180px;
+}
+
+.banner {
+  width: 100%;
+  height: 160px;
+}
+
+.thumb {
+  width: 100px;
+  height: 65px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Selos sobre a imagem */
+.badge {
+  position: absolute;
+  z-index: 2;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.primary {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 700;
+}
+
+.glass {
+  background-color: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.topLeft {
+  top: 10px;
+  left: 10px;
+}
+
+.topRight {
+  top: 10px;
+  right: 10px;
+}
+
+.bottomLeft {
+  bottom: 10px;
+  left: 10px;
+}
