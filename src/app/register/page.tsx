@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { KeyRound, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
 import styles from "../login/auth.module.css";
 
 export default function RegisterPage() {
@@ -13,34 +15,30 @@ export default function RegisterPage() {
         <p className={styles.subtitle}>Crie sua conta e ganhe acesso instantâneo ao cofre de chaves.</p>
 
         <form className={styles.form}>
-          <div className={styles.field}>
-            <label>Nome Completo</label>
+          <FormField label="Nome Completo">
             <input type="text" placeholder="Seu nome" />
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label>E-mail</label>
+          <FormField label="E-mail">
             <input type="email" placeholder="seu.email@exemplo.com" />
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label>Senha</label>
+          <FormField label="Senha">
             <input type="password" placeholder="••••••••" />
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label>Confirmar Senha</label>
+          <FormField label="Confirmar Senha">
             <input type="password" placeholder="••••••••" />
-          </div>
+          </FormField>
 
           <div className={styles.checkboxField}>
             <input type="checkbox" id="terms" />
             <label htmlFor="terms">Li e concordo com os <Link href="/help/terms">Termos de Serviço</Link></label>
           </div>
 
-          <button type="submit" className={styles.submitBtn}>
+          <Button type="submit" className={styles.submitBtn}>
             <UserPlus size={18} /> Criar Conta
-          </button>
+          </Button>
         </form>
 
         <div className={styles.footerLink}>

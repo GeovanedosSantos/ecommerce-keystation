@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { GameCard } from "@/components/GameCard";
 import { Sparkles, TrendingUp, ShieldCheck, Zap, ArrowRight, Trophy, Swords, Compass, Gamepad2, Flame } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
@@ -70,12 +71,12 @@ export default function Home() {
             Adquira chaves originais para Steam, Epic Games e Ubisoft com entrega imediata, os melhores preços do mercado e garantia total.
           </p>
           <div className={styles.heroActions}>
-            <Link href="/catalog" className={styles.primaryBtn}>
+            <Button href="/catalog" size="md">
               Explorar Catálogo
-            </Link>
-            <Link href="/account/vault" className={styles.secondaryBtn}>
+            </Button>
+            <Button href="/account/vault" variant="secondary" size="md">
               Acessar Cofre
-            </Link>
+            </Button>
           </div>
         </div>
         <div className={styles.heroImageWrapper}>

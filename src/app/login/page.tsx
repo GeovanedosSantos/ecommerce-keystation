@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { KeyRound, LogIn } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
 import styles from "./auth.module.css";
 
 export default function LoginPage() {
@@ -13,19 +15,17 @@ export default function LoginPage() {
         <p className={styles.subtitle}>Entre na sua conta para acessar seu cofre e pedidos.</p>
 
         <form className={styles.form}>
-          <div className={styles.field}>
-            <label>E-mail</label>
+          <FormField label="E-mail">
             <input type="email" placeholder="seu.email@exemplo.com" />
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label>Senha</label>
+          <FormField label="Senha">
             <input type="password" placeholder="••••••••" />
-          </div>
+          </FormField>
 
-          <button type="submit" className={styles.submitBtn}>
+          <Button type="submit" className={styles.submitBtn}>
             <LogIn size={18} /> Entrar na Conta
-          </button>
+          </Button>
         </form>
 
         <div className={styles.footerLink}>

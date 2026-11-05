@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CreditCard, QrCode, FileText, Lock, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
 import styles from "./checkout.module.css";
 
 export default function CheckoutPage() {
@@ -59,7 +60,7 @@ export default function CheckoutPage() {
                 <p>Escaneie o QR Code acima com o aplicativo do seu banco ou copie a chave abaixo:</p>
                 <div className={styles.pixKeyRow}>
                   <input type="text" readOnly value="00020126580014br.gov.bcb.pix..." />
-                  <button className={styles.copyBtn}>Copiar Chave</button>
+                  <Button size="sm">Copiar Chave</Button>
                 </div>
               </div>
             </div>
@@ -83,9 +84,9 @@ export default function CheckoutPage() {
               <span>R$ 279,89</span>
             </div>
 
-            <Link href="/checkout/success" className={styles.finalizeBtn}>
+            <Button href="/checkout/success" variant="success">
               <Lock size={16} /> Finalizar Pedido
-            </Link>
+            </Button>
 
             <div className={styles.securityNote}>
               <ShieldCheck size={18} className={styles.successIcon} />

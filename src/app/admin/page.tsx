@@ -1,4 +1,6 @@
 import { ShieldCheck, PlusCircle, DollarSign, Package, Users } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
 import styles from "./admin.module.css";
 
 export default function AdminDashboardPage() {
@@ -42,40 +44,34 @@ export default function AdminDashboardPage() {
 
         <form className={styles.form}>
           <div className={styles.row}>
-            <div className={styles.field}>
-              <label>Título do Jogo</label>
+            <FormField label="Título do Jogo">
               <input type="text" placeholder="Ex: Grand Theft Auto VI" />
-            </div>
-            <div className={styles.field}>
-              <label>Desenvolvedora</label>
+            </FormField>
+            <FormField label="Desenvolvedora">
               <input type="text" placeholder="Ex: Rockstar Games" />
-            </div>
+            </FormField>
           </div>
 
           <div className={styles.row}>
-            <div className={styles.field}>
-              <label>Preço (R$)</label>
+            <FormField label="Preço (R$)">
               <input type="number" step="0.01" placeholder="299.99" />
-            </div>
-            <div className={styles.field}>
-              <label>Preço Promocional (R$)</label>
+            </FormField>
+            <FormField label="Preço Promocional (R$)">
               <input type="number" step="0.01" placeholder="199.99" />
-            </div>
+            </FormField>
           </div>
 
-          <div className={styles.field}>
-            <label>URL da Imagem de Capa</label>
+          <FormField label="URL da Imagem de Capa">
             <input type="text" placeholder="https://..." />
-          </div>
+          </FormField>
 
-          <div className={styles.field}>
-            <label>Descrição Completa</label>
+          <FormField label="Descrição Completa">
             <textarea rows={4} placeholder="Sinopse e detalhes do jogo..." />
-          </div>
+          </FormField>
 
-          <button type="submit" className={styles.submitBtn}>
+          <Button type="submit" inline>
             <PlusCircle size={18} /> Cadastrar Jogo & Gerar Chaves
-          </button>
+          </Button>
         </form>
       </div>
     </div>

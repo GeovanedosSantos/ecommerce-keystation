@@ -1,0 +1,24 @@
+.container {
+  margin: 0 auto;
+  padding-inline: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Largura máxima */
+.xl { max-width: 1280px; }
+.lg { max-width: 900px; }
+.md { max-width: 800px; }
+.sm { max-width: 480px; }
+
+/* Espaçamento vertical (topo e base) */
+.paddingMd { padding-block: 2rem; }
+.paddingLg { padding-block: 2.5rem; }
+.paddingXl { padding-block: 3rem; }
+.padding2xl { padding-block: 4rem; }
+
+/* Espaço entre os filhos */
+.gapNone { gap: 0; }
+.gapSm { gap: 1.5rem; }
+.gapMd { gap: 2rem; }
+.gapLg { gap: 3rem; }

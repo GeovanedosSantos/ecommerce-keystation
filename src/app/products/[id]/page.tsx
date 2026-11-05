@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, ShieldCheck, Zap, Cpu, HardDrive, Monitor, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { Price } from "@/components/ui/Price/Price";
 import styles from "./product.module.css";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -90,10 +92,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </div>
 
             <div className={styles.pricingSection}>
-              <div className={styles.prices}>
-                <span className={styles.oldPrice}>R$ {game.price.toFixed(2)}</span>
-                <span className={styles.currentPrice}>R$ {game.promotionalPrice.toFixed(2)}</span>
-              </div>
+              <Price value={game.promotionalPrice} originalValue={game.price} size="lg" />
               <span className={styles.discountTag}>-50% OFF</span>
             </div>
 
@@ -108,10 +107,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
 
-            <Link href="/cart" className={styles.buyBtn}>
+            <Button href="/cart">
               <ShoppingCart size={20} />
               Adicionar ao Carrinho
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

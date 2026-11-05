@@ -63,34 +63,6 @@
   gap: 1rem;
 }
 
-.primaryBtn {
-  background-color: var(--primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.primaryBtn:hover {
-  background-color: var(--primary-hover);
-}
-
-.secondaryBtn {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: border-color 0.2s;
-}
-
-.secondaryBtn:hover {
-  border-color: var(--secondary);
-  color: var(--secondary);
-}
-
 .heroImageWrapper {
   position: relative;
   width: 100%;

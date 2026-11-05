@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Trash2, ShoppingBag, ArrowRight, Tag } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { Price } from "@/components/ui/Price/Price";
 import styles from "./cart.module.css";
 
 const CART_ITEMS = [
@@ -39,11 +41,11 @@ export default function CartPage() {
                 <span className={styles.platform}>Ativação Steam (PC)</span>
               </div>
               <div className={styles.itemPrice}>
-                <span>R$ {item.price.toFixed(2)}</span>
+                <Price value={item.price} size="md" />
               </div>
-              <button className={styles.removeBtn} aria-label="Remover">
+              <Button variant="danger" size="icon" aria-label="Remover">
                 <Trash2 size={18} />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -72,9 +74,9 @@ export default function CartPage() {
             <span>R$ {subtotal.toFixed(2)}</span>
           </div>
 
-          <Link href="/checkout" className={styles.checkoutBtn}>
+          <Button href="/checkout">
             Ir para o Checkout <ArrowRight size={18} />
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { Headphones, Send, Mail, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
 import styles from "./support.module.css";
 
 export default function SupportPage() {
@@ -16,34 +18,30 @@ export default function SupportPage() {
           <h2>Enviar Nova Mensagem</h2>
           
           <form className={styles.form}>
-            <div className={styles.field}>
-              <label>Nome Completo</label>
+            <FormField label="Nome Completo">
               <input type="text" placeholder="Seu nome" />
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>E-mail</label>
+            <FormField label="E-mail">
               <input type="email" placeholder="seu.email@exemplo.com" />
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>Assunto</label>
+            <FormField label="Assunto">
               <select defaultValue="chave">
-                <option value="chave">Problema com Chave Digital</option>
-                <option value="pagamento">Dúvida sobre Pagamento / Pix</option>
-                <option value="reembolso">Solicitação de Reembolso</option>
-                <option value="outro">Outro Assunto</option>
+              <option value="chave">Problema com Chave Digital</option>
+              <option value="pagamento">Dúvida sobre Pagamento / Pix</option>
+              <option value="reembolso">Solicitação de Reembolso</option>
+              <option value="outro">Outro Assunto</option>
               </select>
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>Mensagem</label>
+            <FormField label="Mensagem">
               <textarea rows={5} placeholder="Descreva sua dúvida ou problema detalhadamente..." />
-            </div>
+            </FormField>
 
-            <button type="submit" className={styles.submitBtn}>
+            <Button type="submit" className={styles.submitBtn}>
               <Send size={18} /> Enviar Solicitação
-            </button>
+            </Button>
           </form>
         </div>
 

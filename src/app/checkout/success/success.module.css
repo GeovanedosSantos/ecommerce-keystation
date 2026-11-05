@@ -55,23 +55,6 @@
   flex-direction: column;
 }
 
-.vaultBtn {
-  background-color: var(--primary);
-  color: white;
-  padding: 1rem;
-  border-radius: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  transition: background-color 0.2s;
-}
-
-.vaultBtn:hover {
-  background-color: var(--primary-hover);
-}
-
 .catalogBtn {
   background-color: var(--bg-main);
   border: 1px solid var(--border-color);

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
 import styles from "./success.module.css";
 
 export default function CheckoutSuccessPage() {
@@ -18,9 +19,9 @@ export default function CheckoutSuccessPage() {
         </p>
 
         <div className={styles.actions}>
-          <Link href="/account/vault" className={styles.vaultBtn}>
+          <Button href="/account/vault">
             <KeyRound size={18} /> Ir para o Meu Cofre (Minhas Chaves)
-          </Link>
+          </Button>
           <Link href="/catalog" className={styles.catalogBtn}>
             Continuar Comprando <ArrowRight size={18} />
           </Link>

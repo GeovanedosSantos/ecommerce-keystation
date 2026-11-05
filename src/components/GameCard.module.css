@@ -89,34 +89,3 @@
   border-top: 1px solid var(--border-color);
 }
 
-.pricing {
-  display: flex;
-  flex-direction: column;
-}
-
-.oldPrice {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  text-decoration: line-through;
-}
-
-.currentPrice {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--success);
-}
-
-.buyBtn {
-  background-color: var(--primary);
-  color: white;
-  padding: 0.5rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-}
-
-.buyBtn:hover {
-  background-color: var(--primary-hover);
-}
