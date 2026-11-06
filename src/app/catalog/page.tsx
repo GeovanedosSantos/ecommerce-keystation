@@ -1,5 +1,7 @@
 import { GameCard } from "@/components/GameCard";
 import { Filter, SlidersHorizontal } from "lucide-react";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./catalog.module.css";
 
 const CATALOG_GAMES = [
@@ -67,9 +69,8 @@ const CATALOG_GAMES = [
 
 export default function CatalogPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Catálogo de Jogos</h1>
+    <PageContainer paddingY="md">
+      <SectionHeader title="Catálogo de Jogos" level="page">
         <div className={styles.sortWrapper}>
           <SlidersHorizontal size={18} />
           <select className={styles.sortSelect} defaultValue="relevance">
@@ -79,7 +80,7 @@ export default function CatalogPage() {
             <option value="newest">Lançamentos</option>
           </select>
         </div>
-      </div>
+      </SectionHeader>
 
       <div className={styles.layout}>
         {/* Filters Sidebar */}
@@ -124,6 +125,6 @@ export default function CatalogPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

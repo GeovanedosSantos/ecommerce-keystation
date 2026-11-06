@@ -1,17 +1,19 @@
 import { ShieldCheck, PlusCircle, DollarSign, Package, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./admin.module.css";
 
 export default function AdminDashboardPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>
-          <ShieldCheck size={28} /> Painel Administrativo
-        </h1>
-        <p>Gerenciamento de vendas, faturamento e cadastro de novos jogos e chaves digitais.</p>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        level="page"
+        icon={<ShieldCheck size={28} />}
+        title="Painel Administrativo"
+        description="Gerenciamento de vendas, faturamento e cadastro de novos jogos e chaves digitais."
+      />
 
       <div className={styles.metricsGrid}>
         <div className={styles.metricCard}>
@@ -74,6 +76,6 @@ export default function AdminDashboardPage() {
           </Button>
         </form>
       </div>
-    </div>
+    </PageContainer>
   );
 }

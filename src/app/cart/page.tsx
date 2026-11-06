@@ -1,8 +1,9 @@
-import Link from "next/link";
-import Image from "next/image";
 import { Trash2, ShoppingBag, ArrowRight, Tag } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
+import { CoverImage } from "@/components/ui/CoverImage/CoverImage";
 import styles from "./cart.module.css";
 
 const CART_ITEMS = [
@@ -24,25 +25,23 @@ export default function CartPage() {
   const subtotal = CART_ITEMS.reduce((acc, item) => acc + item.price, 0);
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>
-        <ShoppingBag size={28} /> Meu Carrinho ({CART_ITEMS.length})
-      </h1>
+    <PageContainer>
+      <SectionHeader
+        level="page"
+        icon={<ShoppingBag size={28} />}
+        title={`Meu Carrinho (${CART_ITEMS.length})`}
+      />
 
       <div className={styles.layout}>
         <div className={styles.itemsList}>
           {CART_ITEMS.map((item) => (
             <div key={item.id} className={styles.cartItem}>
-              <div className={styles.imageWrapper}>
-                <Image src={item.coverImage} alt={item.title} fill className={styles.image} />
-              </div>
+              <CoverImage src={item.coverImage} alt={item.title} size="thumb" />
               <div className={styles.itemDetails}>
                 <h3>{item.title}</h3>
                 <span className={styles.platform}>Ativação Steam (PC)</span>
               </div>
-              <div className={styles.itemPrice}>
-                <Price value={item.price} size="md" />
-              </div>
+              <Price value={item.price} size="md" />
               <Button variant="danger" size="icon" aria-label="Remover">
                 <Trash2 size={18} />
               </Button>
@@ -79,6 +78,6 @@ export default function CartPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

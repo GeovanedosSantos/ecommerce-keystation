@@ -1,17 +1,19 @@
 import { Headphones, Send, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./support.module.css";
 
 export default function SupportPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>
-          <Headphones size={28} /> Central de Suporte & Atendimento
-        </h1>
-        <p>Precisa de ajuda com alguma chave ou pagamento? Nossa equipe está pronta para ajudar.</p>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        level="page"
+        icon={<Headphones size={28} />}
+        title="Central de Suporte & Atendimento"
+        description="Precisa de ajuda com alguma chave ou pagamento? Nossa equipe está pronta para ajudar."
+      />
 
       <div className={styles.layout}>
         <div className={styles.formCard}>
@@ -65,6 +67,6 @@ export default function SupportPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

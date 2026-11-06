@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
+import { CoverImage, CoverBadge } from "@/components/ui/CoverImage/CoverImage";
 import styles from "./GameCard.module.css";
 
 interface GameCardProps {
@@ -31,16 +31,10 @@ export function GameCard({
 
   return (
     <div className={styles.card}>
-      <Link href={`/products/${id}`} className={styles.imageWrapper}>
-        <Image
-          src={coverImage || "/globe.svg"}
-          alt={title}
-          fill
-          className={styles.image}
-        />
-        {hasPromo && <span className={styles.discountBadge}>-{discount}%</span>}
-        <span className={styles.categoryBadge}>{categoryName}</span>
-      </Link>
+      <CoverImage src={coverImage} alt={title} href={`/products/${id}`}>
+        {hasPromo && <CoverBadge tone="primary">-{discount}%</CoverBadge>}
+        <CoverBadge position="bottom-left">{categoryName}</CoverBadge>
+      </CoverImage>
 
       <div className={styles.content}>
         <span className={styles.developer}>{developer}</span>

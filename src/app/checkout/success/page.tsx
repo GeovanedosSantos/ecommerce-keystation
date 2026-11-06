@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import styles from "./success.module.css";
 
 export default function CheckoutSuccessPage() {
   const orderNumber = "KS-849204";
 
   return (
-    <div className={styles.container}>
+    <PageContainer width="md" paddingY="2xl" gap="none">
       <div className={styles.card}>
         <div className={styles.iconWrapper}>
           <CheckCircle2 size={64} className={styles.successIcon} />
@@ -27,6 +28,6 @@ export default function CheckoutSuccessPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

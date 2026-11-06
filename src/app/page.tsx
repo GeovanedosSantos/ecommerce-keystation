@@ -3,6 +3,8 @@ import Image from "next/image";
 import { GameCard } from "@/components/GameCard";
 import { Sparkles, TrendingUp, ShieldCheck, Zap, ArrowRight, Trophy, Swords, Compass, Gamepad2, Flame } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
@@ -57,7 +59,7 @@ const FEATURED_GAMES = [
 
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <PageContainer paddingY="md" gap="lg">
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
@@ -118,14 +120,13 @@ export default function Home() {
 
       {/* Categories Section */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>
-            <Compass className={styles.titleIcon} /> Navegue por Categorias
-          </h2>
-          <Link href="/catalog" className={styles.seeAll}>
-            Ver todas
-          </Link>
-        </div>
+        <SectionHeader
+          title="Navegue por Categorias"
+          icon={<Compass size={24} />}
+          iconColor="primary"
+          linkHref="/catalog"
+          linkLabel="Ver todas"
+        />
         <div className={styles.categoriesGrid}>
           {CATEGORIES.map((cat) => {
             const IconComponent = cat.icon;
@@ -142,14 +143,14 @@ export default function Home() {
 
       {/* Featured Games Section */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>
-            <TrendingUp className={styles.titleIcon} /> Destaques & Promoções
-          </h2>
-          <Link href="/catalog" className={styles.seeAll}>
-            Ver todos <ArrowRight size={16} />
-          </Link>
-        </div>
+        <SectionHeader
+          title="Destaques & Promoções"
+          icon={<TrendingUp size={24} />}
+          iconColor="primary"
+          linkHref="/catalog"
+          linkLabel="Ver todos"
+          linkIcon={<ArrowRight size={16} />}
+        />
 
         <div className={styles.gamesGrid}>
           {FEATURED_GAMES.map((game) => (
@@ -157,6 +158,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-    </div>
+    </PageContainer>
   );
 }

@@ -1,12 +1,13 @@
-import Link from "next/link";
 import { CreditCard, QrCode, FileText, Lock, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./checkout.module.css";
 
 export default function CheckoutPage() {
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Checkout Seguro</h1>
+    <PageContainer>
+      <SectionHeader level="page" title="Checkout Seguro" />
 
       <div className={styles.layout}>
         {/* Payment Methods */}
@@ -95,6 +96,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

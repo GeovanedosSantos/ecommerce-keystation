@@ -37,6 +37,10 @@
   gap: 1.25rem;
 }
 
+.form button[type="submit"] {
+  margin-top: 0.5rem;
+}
+
 .footer {
   display: flex;
   justify-content: center;

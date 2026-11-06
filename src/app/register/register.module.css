@@ -1,0 +1,15 @@
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.checkboxField input {
+  accent-color: var(--primary);
+}
+
+.checkboxField a {
+  color: var(--secondary);
+}
