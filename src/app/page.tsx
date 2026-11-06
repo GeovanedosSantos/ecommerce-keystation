@@ -5,6 +5,7 @@ import { Sparkles, TrendingUp, ShieldCheck, Zap, ArrowRight, Trophy, Swords, Com
 import { Button } from "@/components/ui/Button/Button";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
+import { FEATURED_GAMES } from "@/utils/mock/games";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
@@ -12,49 +13,6 @@ const CATEGORIES = [
   { name: "Ação", count: "jogos", icon: Flame, href: "/catalog?category=action" },
   { name: "Mundo Aberto", count: "jogos", icon: Compass, href: "/catalog?category=open-world" },
   { name: "Indie", count: "jogos", icon: Gamepad2, href: "/catalog?category=indie" },
-];
-
-const FEATURED_GAMES = [
-  {
-    id: "1",
-    title: "Cyberpunk 2077: Ultimate Edition",
-    slug: "cyberpunk-2077-ultimate-edition",
-    coverImage: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 99.99,
-    developer: "CD Projekt Red",
-    categoryName: "RPG de Ação",
-  },
-  {
-    id: "2",
-    title: "Elden Ring: Shadow of the Erdtree",
-    slug: "elden-ring-shadow-of-the-erdtree",
-    coverImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop",
-    price: 229.90,
-    promotionalPrice: 179.90,
-    developer: "FromSoftware",
-    categoryName: "Soulslike",
-  },
-  {
-    id: "3",
-    title: "Grand Theft Auto VI (Pre-Order)",
-    slug: "gta-6-pre-order",
-    coverImage: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=800&auto=format&fit=crop",
-    price: 299.99,
-    promotionalPrice: null,
-    developer: "Rockstar Games",
-    categoryName: "Mundo Aberto",
-  },
-  {
-    id: "4",
-    title: "Baldur's Gate 3",
-    slug: "baldurs-gate-3",
-    coverImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 149.99,
-    developer: "Larian Studios",
-    categoryName: "RPG",
-  },
 ];
 
 export default function Home() {

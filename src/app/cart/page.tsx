@@ -4,22 +4,8 @@ import { Price } from "@/components/ui/Price/Price";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import { CoverImage } from "@/components/ui/CoverImage/CoverImage";
+import { CART_ITEMS } from "@/utils/mock/cart";
 import styles from "./cart.module.css";
-
-const CART_ITEMS = [
-  {
-    id: "1",
-    title: "Cyberpunk 2077: Ultimate Edition",
-    coverImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop",
-    price: 99.99,
-  },
-  {
-    id: "2",
-    title: "Elden Ring: Shadow of the Erdtree",
-    coverImage: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=800&auto=format&fit=crop",
-    price: 179.90,
-  },
-];
 
 export default function CartPage() {
   const subtotal = CART_ITEMS.reduce((acc, item) => acc + item.price, 0);

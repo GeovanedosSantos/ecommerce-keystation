@@ -2,10 +2,11 @@ import Link from "next/link";
 import { CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { MOCK_ORDER_NUMBER } from "@/utils/mock/orders";
 import styles from "./success.module.css";
 
 export default function CheckoutSuccessPage() {
-  const orderNumber = "KS-849204";
+  const orderNumber = MOCK_ORDER_NUMBER;
 
   return (
     <PageContainer width="md" paddingY="2xl" gap="none">

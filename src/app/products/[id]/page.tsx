@@ -1,34 +1,22 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { ShoppingCart, ShieldCheck, Zap, Cpu, HardDrive, Monitor, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { getGameDetail } from "@/utils/mock/games";
 import styles from "./product.module.css";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  // Mock game data corresponding to the requested id
-  const game = {
-    id,
-    title: id === "1" ? "Cyberpunk 2077: Ultimate Edition" : "Elden Ring: Shadow of the Erdtree",
-    description: "Mergulhe em Night City, uma megalópole obcecada por poder, glamour e modificações corporales. Jogue como V, um mercenário fora da lei atrás de um implante único que carrega a chave para a imortalidade. Personalize seu cyberware, conjunto de habilidades e estilo de jogo enquanto explora uma vasta cidade onde suas escolhas moldam a história e o mundo ao seu redor.",
-    price: 199.99,
-    promotionalPrice: 99.99,
-    coverImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop",
-    developer: "CD Projekt Red",
-    publisher: "CD Projekt",
-    releaseDate: "10 de Dezembro de 2020",
-    categoryName: "RPG de Ação",
-    platform: "Steam (PC)",
-    requirements: {
-      os: "Windows 10 64-bit",
-      processor: "Core i7-6700 or Ryzen 5 1600",
-      memory: "12 GB RAM",
-      graphics: "GeForce GTX 1060 6GB or Radeon RX 580",
-      storage: "70 GB SSD",
-    },
-  };
+  const game = getGameDetail(id);
+  if (!game) notFound();
+
+  const promo = game.promotionalPrice;
+  const hasPromo = promo !== null && promo < game.price;
+  const finalPrice = hasPromo ? promo : game.price;
+  const discount = hasPromo ? Math.round(((game.price - promo) / game.price) * 100) : 0;
 
   return (
     <PageContainer gap="none">
@@ -92,8 +80,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </div>
 
             <div className={styles.pricingSection}>
-              <Price value={game.promotionalPrice} originalValue={game.price} size="lg" />
-              <span className={styles.discountTag}>-50% OFF</span>
+              <Price value={finalPrice} originalValue={game.price} size="lg" />
+              {hasPromo && <span className={styles.discountTag}>-{discount}% OFF</span>}
             </div>
 
             <div className={styles.featuresList}>
