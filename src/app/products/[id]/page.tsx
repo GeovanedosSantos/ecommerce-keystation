@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ShoppingCart, ShieldCheck, Zap, Cpu, HardDrive, Monitor, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import styles from "./product.module.css";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -31,7 +31,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   };
 
   return (
-    <div className={styles.container}>
+    <PageContainer gap="none">
       <div className={styles.mainGrid}>
         {/* Left: Gallery & Info */}
         <div className={styles.leftCol}>
@@ -114,6 +114,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -1,0 +1,24 @@
+.skeleton {
+  display: block;
+  /* --border-color contrasta tanto com o fundo da página quanto com o de cards (--bg-surface). */
+  background-color: var(--border-color);
+  border-radius: 6px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    opacity: 0.7;
+  }
+}
