@@ -1,10 +1,16 @@
 import { prisma } from "@/infra/prisma";
-import { hashPassword } from "./password";
-import type { RegisterInput } from "./auth.schemas";
+import { hashPassword, verifyPassword } from "./password";
+import type { LoginInput, RegisterInput } from "./auth.schemas";
 
 export type RegisterResult =
   | { ok: true; userId: string; role: "CUSTOMER" | "ADMIN" }
   | { ok: false; error: "EMAIL_IN_USE" };
+
+export type LoginResult =
+  | { ok: true; userId: string; role: "CUSTOMER" | "ADMIN" }
+  | { ok: false; error: "INVALID_CREDENTIALS" };
+
+const dummyHashPromise = hashPassword("senha-que-nao-existe");
 
 function splitFullName(fullName: string): {
   firstName: string;
@@ -48,4 +54,25 @@ export async function registerUser(input: RegisterInput): Promise<RegisterResult
     }
     throw error;
   }
+}
+
+export async function loginUser(input: LoginInput): Promise<LoginResult> {
+  const user = await prisma.user.findUnique({
+    where: { email: input.email },
+    select: { id: true, role: true, passwordHash: true },
+  });
+
+  const hashToCheck = user?.passwordHash ?? (await dummyHashPromise);
+  const passwordMatches = await verifyPassword(input.password, hashToCheck);
+
+  if (!user || !passwordMatches) {
+    return { ok: false, error: "INVALID_CREDENTIALS" };
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLogin: new Date() },
+  });
+
+  return { ok: true, userId: user.id, role: user.role };
 }
