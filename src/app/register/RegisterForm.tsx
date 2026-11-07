@@ -3,7 +3,10 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
-import styles from "../login/auth.module.css";
+import { AuthForm } from "@/components/ui/AuthCard/AuthCard";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
+import styles from "./register.module.css";
 import { registerAction, type RegisterFormState } from "./actions";
 
 const initialState: RegisterFormState = {
@@ -29,54 +32,58 @@ export default function RegisterForm() {
   );
 
   return (
-    <form className={styles.form} action={formAction}>
-      <div className={styles.field}>
-        <label htmlFor="fullName">Nome Completo</label>
-        <input
-          id="fullName"
-          name="fullName"
-          type="text"
-          placeholder="Seu nome"
-          defaultValue={state.values.fullName}
-          autoComplete="name"
-        />
+    <AuthForm action={formAction}>
+      <div>
+        <FormField label="Nome Completo">
+          <input
+            id="fullName"
+            name="fullName"
+            type="text"
+            placeholder="Seu nome"
+            defaultValue={state.values.fullName}
+            autoComplete="name"
+          />
+        </FormField>
         <FieldError messages={state.fieldErrors.fullName} />
       </div>
 
-      <div className={styles.field}>
-        <label htmlFor="email">E-mail</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="seu.email@exemplo.com"
-          defaultValue={state.values.email}
-          autoComplete="email"
-        />
+      <div>
+        <FormField label="E-mail">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="seu.email@exemplo.com"
+            defaultValue={state.values.email}
+            autoComplete="email"
+          />
+        </FormField>
         <FieldError messages={state.fieldErrors.email} />
       </div>
 
-      <div className={styles.field}>
-        <label htmlFor="password">Senha</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="••••••••"
-          autoComplete="new-password"
-        />
+      <div>
+        <FormField label="Senha">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+          />
+        </FormField>
         <FieldError messages={state.fieldErrors.password} />
       </div>
 
-      <div className={styles.field}>
-        <label htmlFor="confirmPassword">Confirmar Senha</label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          autoComplete="new-password"
-        />
+      <div>
+        <FormField label="Confirmar Senha">
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+          />
+        </FormField>
         <FieldError messages={state.fieldErrors.confirmPassword} />
       </div>
 
@@ -88,9 +95,9 @@ export default function RegisterForm() {
       </div>
       <FieldError messages={state.fieldErrors.acceptedTerms} />
 
-      <button type="submit" className={styles.submitBtn} disabled={pending}>
+      <Button type="submit" disabled={pending}>
         <UserPlus size={18} /> {pending ? "Criando conta..." : "Criar Conta"}
-      </button>
-    </form>
+      </Button>
+    </AuthForm>
   );
 }
