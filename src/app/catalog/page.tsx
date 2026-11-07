@@ -1,75 +1,14 @@
 import { GameCard } from "@/components/GameCard";
 import { Filter, SlidersHorizontal } from "lucide-react";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
+import { GAMES } from "@/utils/mock/games";
 import styles from "./catalog.module.css";
-
-const CATALOG_GAMES = [
-  {
-    id: "1",
-    title: "Cyberpunk 2077: Ultimate Edition",
-    slug: "cyberpunk-2077-ultimate-edition",
-    coverImage: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 99.99,
-    developer: "CD Projekt Red",
-    categoryName: "RPG de Ação",
-  },
-  {
-    id: "2",
-    title: "Elden Ring: Shadow of the Erdtree",
-    slug: "elden-ring-shadow-of-the-erdtree",
-    coverImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop",
-    price: 229.90,
-    promotionalPrice: 179.90,
-    developer: "FromSoftware",
-    categoryName: "Soulslike",
-  },
-  {
-    id: "3",
-    title: "Grand Theft Auto VI (Pre-Order)",
-    slug: "gta-6-pre-order",
-    coverImage: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=800&auto=format&fit=crop",
-    price: 299.99,
-    promotionalPrice: null,
-    developer: "Rockstar Games",
-    categoryName: "Mundo Aberto",
-  },
-  {
-    id: "4",
-    title: "Baldur's Gate 3",
-    slug: "baldurs-gate-3",
-    coverImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 149.99,
-    developer: "Larian Studios",
-    categoryName: "RPG",
-  },
-  {
-    id: "5",
-    title: "Black Myth: Wukong",
-    slug: "black-myth-wukong",
-    coverImage: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=800&auto=format&fit=crop",
-    price: 229.00,
-    promotionalPrice: 199.00,
-    developer: "Game Science",
-    categoryName: "Ação",
-  },
-  {
-    id: "6",
-    title: "Forza Horizon 5",
-    slug: "forza-horizon-5",
-    coverImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800&auto=format&fit=crop",
-    price: 249.00,
-    promotionalPrice: 124.50,
-    developer: "Playground Games",
-    categoryName: "Corrida",
-  },
-];
 
 export default function CatalogPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Catálogo de Jogos</h1>
+    <PageContainer paddingY="md">
+      <SectionHeader title="Catálogo de Jogos" level="page">
         <div className={styles.sortWrapper}>
           <SlidersHorizontal size={18} />
           <select className={styles.sortSelect} defaultValue="relevance">
@@ -79,7 +18,7 @@ export default function CatalogPage() {
             <option value="newest">Lançamentos</option>
           </select>
         </div>
-      </div>
+      </SectionHeader>
 
       <div className={styles.layout}>
         {/* Filters Sidebar */}
@@ -118,12 +57,12 @@ export default function CatalogPage() {
         {/* Game Grid */}
         <div className={styles.gridContainer}>
           <div className={styles.grid}>
-            {CATALOG_GAMES.map((game) => (
+            {GAMES.map((game) => (
               <GameCard key={game.id} {...game} />
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

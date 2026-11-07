@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { GameCard } from "@/components/GameCard";
 import { Sparkles, TrendingUp, ShieldCheck, Zap, ArrowRight, Trophy, Swords, Compass, Gamepad2, Flame } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
+import { FEATURED_GAMES } from "@/utils/mock/games";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
@@ -11,52 +15,9 @@ const CATEGORIES = [
   { name: "Indie", count: "jogos", icon: Gamepad2, href: "/catalog?category=indie" },
 ];
 
-const FEATURED_GAMES = [
-  {
-    id: "1",
-    title: "Cyberpunk 2077: Ultimate Edition",
-    slug: "cyberpunk-2077-ultimate-edition",
-    coverImage: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 99.99,
-    developer: "CD Projekt Red",
-    categoryName: "RPG de Ação",
-  },
-  {
-    id: "2",
-    title: "Elden Ring: Shadow of the Erdtree",
-    slug: "elden-ring-shadow-of-the-erdtree",
-    coverImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop",
-    price: 229.90,
-    promotionalPrice: 179.90,
-    developer: "FromSoftware",
-    categoryName: "Soulslike",
-  },
-  {
-    id: "3",
-    title: "Grand Theft Auto VI (Pre-Order)",
-    slug: "gta-6-pre-order",
-    coverImage: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=800&auto=format&fit=crop",
-    price: 299.99,
-    promotionalPrice: null,
-    developer: "Rockstar Games",
-    categoryName: "Mundo Aberto",
-  },
-  {
-    id: "4",
-    title: "Baldur's Gate 3",
-    slug: "baldurs-gate-3",
-    coverImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop",
-    price: 199.99,
-    promotionalPrice: 149.99,
-    developer: "Larian Studios",
-    categoryName: "RPG",
-  },
-];
-
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <PageContainer paddingY="md" gap="lg">
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
@@ -70,12 +31,12 @@ export default function Home() {
             Adquira chaves originais para Steam, Epic Games e Ubisoft com entrega imediata, os melhores preços do mercado e garantia total.
           </p>
           <div className={styles.heroActions}>
-            <Link href="/catalog" className={styles.primaryBtn}>
+            <Button href="/catalog" size="md">
               Explorar Catálogo
-            </Link>
-            <Link href="/account/vault" className={styles.secondaryBtn}>
+            </Button>
+            <Button href="/account/vault" variant="secondary" size="md">
               Acessar Cofre
-            </Link>
+            </Button>
           </div>
         </div>
         <div className={styles.heroImageWrapper}>
@@ -117,14 +78,13 @@ export default function Home() {
 
       {/* Categories Section */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>
-            <Compass className={styles.titleIcon} /> Navegue por Categorias
-          </h2>
-          <Link href="/catalog" className={styles.seeAll}>
-            Ver todas
-          </Link>
-        </div>
+        <SectionHeader
+          title="Navegue por Categorias"
+          icon={<Compass size={24} />}
+          iconColor="primary"
+          linkHref="/catalog"
+          linkLabel="Ver todas"
+        />
         <div className={styles.categoriesGrid}>
           {CATEGORIES.map((cat) => {
             const IconComponent = cat.icon;
@@ -141,14 +101,14 @@ export default function Home() {
 
       {/* Featured Games Section */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>
-            <TrendingUp className={styles.titleIcon} /> Destaques & Promoções
-          </h2>
-          <Link href="/catalog" className={styles.seeAll}>
-            Ver todos <ArrowRight size={16} />
-          </Link>
-        </div>
+        <SectionHeader
+          title="Destaques & Promoções"
+          icon={<TrendingUp size={24} />}
+          iconColor="primary"
+          linkHref="/catalog"
+          linkLabel="Ver todos"
+          linkIcon={<ArrowRight size={16} />}
+        />
 
         <div className={styles.gamesGrid}>
           {FEATURED_GAMES.map((game) => (
@@ -156,6 +116,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-    </div>
+    </PageContainer>
   );
 }

@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  color: var(--text-main);
+}
+
+/* Título de seção (h2) */
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  gap: 0.5rem;
+}
+
+/* Título de página (h1) */
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  gap: 0.75rem;
+}
+
+.iconPrimary {
+  color: var(--primary);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.link:hover {
+  opacity: 0.8;
+}

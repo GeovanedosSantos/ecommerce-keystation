@@ -1,32 +1,3 @@
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.header h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--text-main);
-}
-
-.header p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -40,30 +11,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-
-.imageWrapper {
-  position: relative;
-  width: 100%;
-  height: 160px;
-  background-color: var(--bg-main);
-}
-
-.image {
-  object-fit: cover;
-}
-
-.platformBadge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(4px);
-  color: var(--secondary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
 }
 
 .content {

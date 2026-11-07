@@ -1,4 +1,4 @@
-# GEMINI.md - Diretrizes do Projeto Ecommerce Keystation
+# AGENTS.md - Diretrizes do Projeto Ecommerce Keystation
 
 Este documento contém as diretrizes de arquitetura, padrões de projeto, convenções de código e comandos essenciais para o desenvolvimento no repositório **Ecommerce Keystation**.
 
@@ -59,6 +59,7 @@ ecommerce-keystation/
 
 ### 3.2. Estilização
 - Utilizar **CSS Modules** (`*.module.css`) associados aos componentes.
+Por ser CSS MODULES 
 - Seguir a convenção de nomenclatura **BEM** (Block Element Modifier):
   ```css
   /* Exemplo: Button.module.css */
@@ -94,7 +95,7 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
   ```bash
   docker compose up -d
   ```
-- O schema do Prisma está localizado em `prisma/schema.prisma` e sua configuração em `prisma7.config.ts`.
+- O schema do Prisma está localizado em `prisma/schema.prisma` e sua configuração em `prisma.config.ts`.
 - O cliente Prisma é gerado em `src/generated/prisma`.
 - Nunca commitar senhas reais ou arquivos `.env`. Utilize sempre `.env.example` como modelo.
 
@@ -138,7 +139,8 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
 
 ---
 
-## 6. Comandos e Scripts Úteis
+
+## 7. Comandos e Scripts Úteis
 
 | Comando | Descrição |
 | :--- | :--- |

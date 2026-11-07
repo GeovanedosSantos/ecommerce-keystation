@@ -1,49 +1,49 @@
 import { Headphones, Send, Mail, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { FormField } from "@/components/ui/FormField/FormField";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
 import styles from "./support.module.css";
 
 export default function SupportPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>
-          <Headphones size={28} /> Central de Suporte & Atendimento
-        </h1>
-        <p>Precisa de ajuda com alguma chave ou pagamento? Nossa equipe está pronta para ajudar.</p>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        level="page"
+        icon={<Headphones size={28} />}
+        title="Central de Suporte & Atendimento"
+        description="Precisa de ajuda com alguma chave ou pagamento? Nossa equipe está pronta para ajudar."
+      />
 
       <div className={styles.layout}>
         <div className={styles.formCard}>
           <h2>Enviar Nova Mensagem</h2>
           
           <form className={styles.form}>
-            <div className={styles.field}>
-              <label>Nome Completo</label>
+            <FormField label="Nome Completo">
               <input type="text" placeholder="Seu nome" />
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>E-mail</label>
+            <FormField label="E-mail">
               <input type="email" placeholder="seu.email@exemplo.com" />
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>Assunto</label>
+            <FormField label="Assunto">
               <select defaultValue="chave">
-                <option value="chave">Problema com Chave Digital</option>
-                <option value="pagamento">Dúvida sobre Pagamento / Pix</option>
-                <option value="reembolso">Solicitação de Reembolso</option>
-                <option value="outro">Outro Assunto</option>
+              <option value="chave">Problema com Chave Digital</option>
+              <option value="pagamento">Dúvida sobre Pagamento / Pix</option>
+              <option value="reembolso">Solicitação de Reembolso</option>
+              <option value="outro">Outro Assunto</option>
               </select>
-            </div>
+            </FormField>
 
-            <div className={styles.field}>
-              <label>Mensagem</label>
+            <FormField label="Mensagem">
               <textarea rows={5} placeholder="Descreva sua dúvida ou problema detalhadamente..." />
-            </div>
+            </FormField>
 
-            <button type="submit" className={styles.submitBtn}>
+            <Button type="submit" className={styles.submitBtn}>
               <Send size={18} /> Enviar Solicitação
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -67,6 +67,6 @@ export default function SupportPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

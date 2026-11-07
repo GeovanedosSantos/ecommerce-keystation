@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/Button/Button";
+import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { MOCK_ORDER_NUMBER } from "@/utils/mock/orders";
 import styles from "./success.module.css";
 
 export default function CheckoutSuccessPage() {
-  const orderNumber = "KS-849204";
+  const orderNumber = MOCK_ORDER_NUMBER;
 
   return (
-    <div className={styles.container}>
+    <PageContainer width="md" paddingY="2xl" gap="none">
       <div className={styles.card}>
         <div className={styles.iconWrapper}>
           <CheckCircle2 size={64} className={styles.successIcon} />
@@ -18,14 +21,14 @@ export default function CheckoutSuccessPage() {
         </p>
 
         <div className={styles.actions}>
-          <Link href="/account/vault" className={styles.vaultBtn}>
+          <Button href="/account/vault">
             <KeyRound size={18} /> Ir para o Meu Cofre (Minhas Chaves)
-          </Link>
+          </Button>
           <Link href="/catalog" className={styles.catalogBtn}>
             Continuar Comprando <ArrowRight size={18} />
           </Link>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
