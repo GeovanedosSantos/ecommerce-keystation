@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { KeyRound, Lock, Mail, Send, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Lock, Mail, Send, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import styles from "./forgot-password.module.css";
 
@@ -30,18 +30,13 @@ export function ForgotPasswordContent() {
 
   return (
     <div className={styles.forgotPassword}>
-      {/* Topo: Logo com Ícone de Chave e Tipografia KeyStation */}
-      <Link href="/" className={styles.forgotPassword__brand} aria-label="KeyStation Home">
-        <div className={styles.forgotPassword__brandBadge}>
-          <KeyRound size={22} className={styles.forgotPassword__brandKey} />
-        </div>
-        <span className={styles.forgotPassword__brandText}>
-          Key<span className={styles.forgotPassword__brandHighlight}>Station</span>
-        </span>
-      </Link>
-
       {/* Card Principal */}
       <div className={styles.forgotPassword__card}>
+        {/* Ícone de Cadeado em Caixa Roxo Translúcido */}
+        <div className={styles.forgotPassword__iconWrapper} aria-hidden="true">
+          <Lock size={22} />
+        </div>
+
         {/* Cabeçalho */}
         <div className={styles.forgotPassword__header}>
           <h1 className={styles.forgotPassword__title}>Esqueceu sua senha?</h1>
