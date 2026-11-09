@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { LogIn } from "lucide-react";
 import { AuthCard, AuthForm } from "@/components/ui/AuthCard/AuthCard";
 import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
   return (
@@ -19,6 +21,12 @@ export default function LoginPage() {
         <FormField label="Senha">
           <input type="password" placeholder="••••••••" />
         </FormField>
+
+        <div className={styles.forgotPasswordRow}>
+          <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+            Esqueceu sua senha?
+          </Link>
+        </div>
 
         <Button type="submit">
           <LogIn size={18} /> Entrar na Conta
