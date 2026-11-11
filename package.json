@@ -11,7 +11,9 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.7",
+    "jose": "^6.2.15",
     "lucide-react": "^1.55.0",
     "next": "16.4.4",
     "pg": "^8.23.1",
@@ -25,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "prisma": "^7.10.0",
+    "tsx": "^4.23.15",
     "typescript": "7.0.2"
   },
   "allowScripts": {
