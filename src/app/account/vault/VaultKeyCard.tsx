@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ShieldCheck, Copy, Check, Eye } from "lucide-react";
 import { CoverImage, CoverBadge } from "@/components/ui/CoverImage/CoverImage";
 import type { VaultKey } from "@/utils/mock/vault";
@@ -65,9 +66,9 @@ export function VaultKeyCard({ item }: { item: VaultKey }) {
 
         <div className={styles.guideLink}>
           <ShieldCheck size={16} className={styles.successIcon} />
-          <a href="/help/steam-guide" target="_blank" rel="noopener noreferrer">
+          <Link href="/help/steam-guide">
             Como ativar na Steam &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </div>
