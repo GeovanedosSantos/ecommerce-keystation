@@ -15,7 +15,7 @@ function UserButtons({isLogged, cartCount}: { isLogged: boolean, cartCount: numb
             <ShoppingCart size={20} />
             {cartCount > 0 && <span className={styles.cartBadge} aria-hidden="true">{cartCount}</span>}
           </Link>
-          <Link href="/account/vault" className={styles.userBtn} aria-label="Conta">
+          <Link href="/account" className={styles.userBtn} aria-label="Minha Conta">
             <User size={20} />
           </Link>
         </div>

@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { Suspense, type CSSProperties, type Ref } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, LayoutGrid, Vault, Package, LifeBuoy, type LucideIcon } from "lucide-react";
+import { Menu, LayoutGrid, Vault, Package, LifeBuoy, User, type LucideIcon } from "lucide-react";
 import { Logo } from "../Logo";
 import styles from "./Sidebar.module.css";
 import { SIDEBAR_ID, useSidebar } from "./SidebarContext";
 
 const NAV_LINKS: { href: string, label: string, icon: LucideIcon }[] = [
   { href: "/catalog", label: "Catálogo", icon: LayoutGrid },
+  { href: "/account", label: "Minha Conta", icon: User },
   { href: "/account/vault", label: "Cofre", icon: Vault },
   { href: "/account/orders", label: "Pedidos", icon: Package },
   { href: "/support", label: "Suporte", icon: LifeBuoy },
