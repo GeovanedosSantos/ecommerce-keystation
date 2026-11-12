@@ -1,76 +1,1136 @@
-.metricsGrid {
+.adminLayout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - var(--header-height));
+  width: 100%;
+  background-color: var(--bg-main);
+}
+
+/* Sidebar Dedicado do Admin */
+.adminSidebar {
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.sidebarTop {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+}
+
+.sidebarBrandBadge {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarBrandKey {
+  color: #FFFFFF;
+}
+
+.sidebarBrandText {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.sidebarBrandHighlight {
+  color: var(--secondary);
+}
+
+.sidebarBadgeText {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #C084FC;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: -0.75rem;
+  padding-left: 0.25rem;
+}
+
+/* Navegação da Sidebar */
+.sidebarNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-top: 1px solid rgba(51, 65, 85, 0.5);
+  padding-top: 1.25rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.navItemActive {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.navItemDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.navItemDisabled:hover {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+/* Rodapé da Sidebar */
+.sidebarBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid rgba(51, 65, 85, 0.5);
+  padding-top: 1.25rem;
+}
+
+.sidebarBottomText {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.backToStoreLink {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.backToStoreLink:hover {
+  color: #38BDF8;
+  transform: translateX(-3px);
+}
+
+/* Área de Conteúdo Principal */
+.adminMain {
+  display: flex;
+  flex-direction: column;
+  background-color: #0F172A;
+  min-width: 0;
+}
+
+/* Barra Superior */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.breadcrumbCurrent {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.adminBadge {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Corpo da Área Administrativa */
+.contentArea {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Cabeçalho da Seção */
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.headerTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sectionBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.sectionSubtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background-color: rgba(6, 182, 212, 0.05);
+}
+
+/* Sub-barra de Filtro de Data */
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: -0.75rem;
+}
+
+.dateSelect {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+}
+
+.filterNote {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ========================================================
+   SEÇÃO: VISÃO GERAL
+   ======================================================== */
+
+/* Grid de Métricas (4 cards) */
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
 }
 
 .metricCard {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 1.5rem;
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metricTop {
+  display: flex;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .metricIcon {
   color: var(--primary);
-  background-color: rgba(139, 92, 246, 0.1);
-  padding: 0.75rem;
-  border-radius: 12px;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
 }
 
-.metricCard div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.metricValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
 }
 
-.metricCard span {
-  font-size: 0.85rem;
+.metricSub {
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
-.metricCard h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-main);
+/* Grid de Gráficos e Jogos Vendidos (2fr 1fr) */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
 }
 
-.section {
+/* Card: Evolução do Faturamento */
+.chartCard {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.sectionHeader h2 {
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chartTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.chartTitle {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
-.form {
+.chartSubtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.chartTag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* Gráfico de Barras Estilizado */
+.barChartContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 200px;
+  padding-top: 2rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+  gap: 1rem;
+}
+
+.barCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.barValue {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.barPillar {
+  width: 100%;
+  max-width: 64px;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.3s ease;
+}
+
+.barPurple {
+  background: linear-gradient(180deg, #A855F7 0%, #8B5CF6 100%);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.25);
+}
+
+.barCyan {
+  background: linear-gradient(180deg, #38BDF8 0%, #06B6D4 100%);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.barFlat {
+  height: 2px;
+  background-color: #334155;
+  width: 100%;
+  max-width: 48px;
+}
+
+.barDate {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* Card: Jogos Vendidos */
+.topGamesCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.topGamesList {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.row {
+.topGameItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  padding-bottom: 1rem;
+}
+
+.topGameItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.topGameInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.topGameName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.topGameCount {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.topGameRevenue {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+/* Card: Pedidos Recentes */
+.recentOrdersCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.recentOrdersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recentOrdersTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.viewAllLink {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.viewAllLink:hover {
+  color: #38BDF8;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.adminTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.adminTable th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+  white-space: nowrap;
+}
+
+.adminTable td {
+  padding: 1.15rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.35);
+  vertical-align: middle;
+}
+
+.orderId {
+  color: var(--secondary);
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Badges de Status do Admin */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusApproved {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.statusPending {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.statusCanceled {
+  background-color: rgba(100, 116, 139, 0.18);
+  color: var(--text-secondary);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* ========================================================
+   SEÇÃO: CADASTRO DE JOGOS
+   ======================================================== */
+
+.gamesLayout {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cardHeaderWithBadge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitleH3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.draftBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background-color: rgba(15, 23, 42, 0.4);
+  letter-spacing: 0.05em;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.inputLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.inputField {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.inputField:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+}
+
+.textareaField {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.row2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
 
-@media (max-width: 768px) {
-  .row {
+/* Checkboxes de sistemas */
+.compatSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compatOptions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.compatNote {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* Dropzone de Imagens */
+.dropzone {
+  border: 2px dashed rgba(51, 65, 85, 0.8);
+  border-radius: 12px;
+  padding: 2.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  text-align: center;
+  background-color: rgba(15, 23, 42, 0.4);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.dropzone:hover {
+  border-color: var(--secondary);
+}
+
+.dropzoneIcon {
+  color: var(--secondary);
+}
+
+.dropzoneTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.dropzoneNote {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.selectFilesBtn {
+  margin-top: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.selectFilesBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Lista de Arquivos Anexados */
+.uploadedFileList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.uploadedFileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.uploadedFileLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.uploadedFileThumb {
+  width: 44px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  background-color: #0F172A;
+}
+
+.uploadedFileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.uploadedFileName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.uploadedFileMeta {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.deleteFileBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.35rem;
+  transition: color 0.2s;
+}
+
+.deleteFileBtn:hover {
+  color: var(--danger);
+}
+
+/* Barra de Ações do Formulário */
+.formActionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.actionRightButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cancelActionBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.35rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelActionBtn:hover {
+  color: var(--text-main);
+  border-color: #64748B;
+}
+
+.draftActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.75rem 1.35rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.draftActionBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.publishActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary);
+  border: none;
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  transition: all 0.2s;
+}
+
+.publishActionBtn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55);
+}
+
+/* Coluna Direita (Prévia do Card) */
+.previewColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.previewWrapperCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.previewHeaderTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.previewHeaderNote {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: -0.85rem;
+}
+
+/* Prévia Visual do Card */
+.livePreviewCard {
+  background-color: #0F172A;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.livePreviewBanner {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+
+.livePreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.livePreviewTagNeon {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: var(--secondary);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+.livePreviewPlatform {
+  position: absolute;
+  bottom: 0.65rem;
+  right: 0.65rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #CBD5E1;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+.livePreviewBody {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.livePreviewCategory {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+.livePreviewTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.livePreviewSub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.livePreviewPriceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.livePreviewPrice {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.livePreviewCartBtn {
+  background-color: var(--primary);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notPublishedBadge {
+  align-self: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  background-color: rgba(15, 23, 42, 0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Card: Checklist de Publicação */
+.checklistCard {
+  background: rgba(6, 182, 212, 0.04);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-left: 4px solid var(--secondary);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.checklistIcon {
+  color: var(--secondary);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.checklistBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.checklistTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.checklistText {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.previewDisclaimer {
+  font-size: 0.75rem;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+/* Rodapé Geral */
+.adminFooterDisclaimer {
+  font-size: 0.78rem;
+  color: #64748B;
+  border-top: 1px solid rgba(51, 65, 85, 0.4);
+  padding-top: 1.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 1080px) {
+  .adminLayout {
     grid-template-columns: 1fr;
+  }
+
+  .adminSidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .metricsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .gamesLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .contentArea {
+    padding: 1.25rem 1rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+
+  .formActionBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionRightButtons {
+    flex-direction: column;
+  }
+
+  .cancelActionBtn, .draftActionBtn, .publishActionBtn {
+    width: 100%;
+    justify-content: center;
   }
 }
