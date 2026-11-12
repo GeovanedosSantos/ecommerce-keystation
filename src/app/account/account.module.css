@@ -1,0 +1,537 @@
+.accountPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: var(--secondary);
+}
+
+.breadcrumbCurrent {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.breadcrumbSeparator {
+  color: #475569;
+}
+
+/* Cabeçalho da Página */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Grid Principal (2 Colunas) */
+.grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Coluna da Esquerda (Sidebar Card do Usuário) */
+.userSidebar {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.userProfileSnippet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.avatarLarge {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.35) 0%, rgba(30, 41, 59, 1) 100%);
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.userName {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.userMemberSince {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Menu de Navegação da Conta */
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.navItemActive {
+  background-color: rgba(139, 92, 246, 0.18);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.navDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0.5rem 0;
+}
+
+.navItemLogout {
+  color: #F87171;
+}
+
+.navItemLogout:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+}
+
+/* Coluna da Direita (Painel Principal "Meus Dados") */
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mainCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Topo do Card */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.editBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  background-color: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 6px;
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Seção de Avatar */
+.avatarSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.avatarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatarBig {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.avatarMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.avatarName {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.avatarRules {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.avatarChangeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.avatarChangeBtn:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background-color: rgba(6, 182, 212, 0.06);
+}
+
+/* Seções de Formulário */
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputField {
+  width: 100%;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputField:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+}
+
+.inputFieldWithIcon {
+  padding-right: 2.75rem;
+}
+
+.iconToggleBtn {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.iconToggleBtn:hover {
+  color: var(--text-main);
+}
+
+.helperText {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: -0.25rem;
+}
+
+/* Bloco de Alterar Senha */
+.passwordSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.75rem;
+}
+
+.passwordTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Barra de Ações (Rodapé do Card) */
+.actionsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.75rem;
+}
+
+.actionsLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.editModeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.editModeButton:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.editHint {
+  font-size: 0.8rem;
+  color: #38BDF8;
+}
+
+.actionsRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn:hover {
+  color: var(--text-main);
+  border-color: #64748B;
+}
+
+.saveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary);
+  border: none;
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  transition: all 0.2s ease;
+}
+
+.saveBtn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+  transform: translateY(-1px);
+}
+
+.saveBtn:active {
+  transform: translateY(0);
+}
+
+/* Card de Alerta / Segurança */
+.securityCard {
+  background: rgba(6, 182, 212, 0.04);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-left: 4px solid var(--secondary);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.securityIcon {
+  color: var(--secondary);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.securityBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.securityTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.securityText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Feedback de Sucesso */
+.successToast {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--success);
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade */
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .mainCard {
+    padding: 1.5rem;
+  }
+
+  .actionsBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionsRight {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

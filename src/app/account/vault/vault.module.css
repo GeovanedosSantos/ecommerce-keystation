@@ -1,82 +1,633 @@
+.vaultPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: var(--secondary);
+}
+
+.breadcrumbCurrent {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.breadcrumbSeparator {
+  color: #475569;
+}
+
+/* Badge e Cabeçalho */
+.headerBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.badgeTop {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--secondary);
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Grid Principal (Sidebar 280px + Conteúdo) */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Sidebar do Usuário (Coluna da Esquerda) */
+.userSidebar {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.userProfileSnippet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.avatarLarge {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.35) 0%, rgba(30, 41, 59, 1) 100%);
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.userName {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.userMemberSince {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.navItemActive {
+  background-color: rgba(139, 92, 246, 0.18);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.navDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0.5rem 0;
+}
+
+.navItemLogout {
+  color: #F87171;
+}
+
+.navItemLogout:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+}
+
+/* Coluna da Direita (Painel do Cofre) */
+.mainPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Linha de Estatísticas (3 cards) */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.statCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.statValue {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.statLabel {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* Card de Alerta / Antes de Revelar */
+.alertCard {
+  background: rgba(6, 182, 212, 0.04);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-left: 4px solid var(--secondary);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.alertIcon {
+  color: var(--secondary);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.alertBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.alertTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.alertText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Barra de Filtros e Link da Steam */
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filterTabs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filterTab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterTab:hover {
+  color: var(--text-main);
+}
+
+.filterTabActive {
+  background-color: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #C084FC;
+  font-weight: 600;
+}
+
+.steamGuideLink {
+  color: var(--secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.steamGuideLink:hover {
+  color: #38BDF8;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+}
+
+/* Grid de Jogos (2 por linha) */
+.keysGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-.vaultCard {
+/* Card do Jogo */
+.gameCard {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.content {
+.gameCard:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+/* Banner de Capa */
+.cardBanner {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: #0F172A;
+  overflow: hidden;
+}
+
+.bannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(30, 41, 59, 0.85) 100%);
+}
+
+.badgeProtected {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--success);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  backdrop-filter: blur(6px);
+}
+
+.badgeProtectedDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--success);
+}
+
+.badgeRevealed {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(6, 182, 212, 0.5);
+  color: var(--secondary);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  backdrop-filter: blur(6px);
+}
+
+.badgePlatform {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #CBD5E1;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(6px);
+}
+
+/* Corpo do Card */
+.cardBody {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.15rem;
+  flex: 1;
 }
 
-.content h3 {
-  font-size: 1.1rem;
+.gameHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gameTitle {
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
-.date {
+.gameMeta {
   font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Seção da Chave */
+.keySection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.keyLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Caixa de Chave Oculta */
+.keyBoxHidden {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
   color: var(--text-secondary);
 }
 
-.keyBox {
+.hiddenDots {
+  font-family: monospace;
+  font-size: 1.05rem;
+  letter-spacing: 2px;
+  color: #64748B;
+}
+
+/* Caixa de Chave Revelada */
+.keyBoxRevealed {
+  background-color: var(--bg-main);
+  border: 1px solid var(--secondary);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  justify-content: center;
 }
 
-.keyText {
-  flex: 1;
-  font-family: monospace;
-  font-size: 0.95rem;
+.revealedCode {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
   color: var(--text-main);
-  letter-spacing: 1px;
 }
 
+/* Ações */
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Botão Revelar Chave (Verde Esmeralda) */
 .revealBtn {
-  background-color: var(--primary);
-  color: white;
+  width: 100%;
+  background-color: var(--success);
   border: none;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  color: #FFFFFF;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s ease;
 }
 
 .revealBtn:hover {
-  background-color: var(--primary-hover);
+  opacity: 0.92;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
 }
 
-.guideLink {
+/* Botão Copiar (Violeta) */
+.copyBtn {
+  flex: 1;
+  background-color: var(--primary);
+  border: none;
+  color: #FFFFFF;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  transition: all 0.2s ease;
+}
+
+.copyBtn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+  transform: translateY(-1px);
+}
+
+.copyFeedback {
   color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
 }
 
-.successIcon {
-  color: var(--success);
+/* Nota abaixo dos botões */
+.keyNote {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
-.guideLink a:hover {
-  text-decoration: underline;
+/* Card de Suporte (Ativação) */
+.supportCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.supportLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.supportTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.supportDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.supportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.supportBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Rodapé Informativo */
+.footerDisclaimer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #64748B;
+  padding: 0.5rem 0;
+}
+
+/* Responsividade */
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .keysGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .supportCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .supportBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }

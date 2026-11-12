@@ -6,6 +6,8 @@ import { AuthForm } from "@/components/ui/AuthCard/AuthCard";
 import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
 import { loginAction, type LoginFormState } from "./actions";
+import  Link from "next/link"
+import styles from  "./login.module.css"
 
 const initialState: LoginFormState = {
   fieldErrors: {},
@@ -61,6 +63,12 @@ export default function LoginForm() {
         </FormField>
         <FieldError messages={state.fieldErrors.password} />
       </div>
+
+        <div className={styles.forgotPasswordRow}>
+          <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+            Esqueceu sua senha?
+          </Link>
+        </div>
 
       <Button type="submit" disabled={pending}>
         <LogIn size={18} /> {pending ? "Entrando..." : "Entrar na Conta"}
