@@ -125,7 +125,7 @@ const GAMES: SeedGame[] = [
   },
 ];
 
-const KEYS_PER_PRODUCT = 5;
+const KEYS_PER_VARIANT = 5;
 
 const COUPONS = [
   {
@@ -180,7 +180,7 @@ async function main() {
       });
 
   for (const game of GAMES) {
-    const item = await prisma.catalogItem.upsert({
+    const product = await prisma.product.upsert({
       where: { slug: game.slug },
       update: {},
       create: {
@@ -190,45 +190,48 @@ async function main() {
         description: game.description,
         developer: game.developer,
         publisher: game.publisher,
-        releaseDate: new Date(game.releaseDate),
         coverPath: game.coverPath,
         systemRequirements: game.systemRequirements,
         genres: { connect: game.genres.map((name) => ({ name })) },
       },
     });
 
-    const product = await prisma.product.upsert({
-      where: { itemId_platformId: { itemId: item.id, platformId: steam.id } },
-      update: { price: game.price, status: "PUBLISHED" },
+    const releaseDate = new Date(game.releaseDate);
+    const variant = await prisma.productVariant.upsert({
+      where: {
+        productId_platformId: { productId: product.id, platformId: steam.id },
+      },
+      update: { price: game.price, status: "PUBLISHED", releaseDate },
       create: {
-        itemId: item.id,
+        productId: product.id,
         platformId: steam.id,
         price: game.price,
         status: "PUBLISHED",
+        releaseDate,
       },
     });
 
-    for (let i = 1; i <= KEYS_PER_PRODUCT; i++) {
+    for (let i = 1; i <= KEYS_PER_VARIANT; i++) {
       const keyCode = `${game.keyPrefix}-${String(i).padStart(5, "0")}-DEVKS`;
       await prisma.key.upsert({
         where: { keyCode },
         update: {},
-        create: { productId: product.id, keyCode },
+        create: { variantId: variant.id, keyCode },
       });
     }
 
     if (game.discountPercent !== null) {
       await prisma.promotionProduct.upsert({
         where: {
-          promotionId_productId: {
+          promotionId_variantId: {
             promotionId: promotion.id,
-            productId: product.id,
+            variantId: variant.id,
           },
         },
         update: { discountPercent: game.discountPercent },
         create: {
           promotionId: promotion.id,
-          productId: product.id,
+          variantId: variant.id,
           discountPercent: game.discountPercent,
         },
       });
@@ -251,14 +254,14 @@ async function main() {
     });
   }
 
-  const [items, products, keys, coupons, ticketCategories] = await Promise.all([
-    prisma.catalogItem.count(),
+  const [products, variants, keys, coupons, ticketCategories] = await Promise.all([
     prisma.product.count(),
+    prisma.productVariant.count(),
     prisma.key.count(),
     prisma.coupon.count(),
     prisma.ticketCategory.count(),
   ]);
-  console.log({ items, products, keys, coupons, ticketCategories });
+  console.log({ products, variants, keys, coupons, ticketCategories });
 }
 
 main()
