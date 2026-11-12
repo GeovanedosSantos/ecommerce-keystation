@@ -1,25 +1,36 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { ShoppingCart, User } from "lucide-react";
+import { LogOut, ShoppingCart, User } from "lucide-react";
 import styles from "./Header.module.css";
 import { HeaderContent } from "./HeaderContent";
+import { getSession } from "@/infra/session-cookie";
+import { logoutAction } from "@/app/logout/actions";
 
-function UserButtons({isLogged, cartCount}: { isLogged: boolean, cartCount: number }) {
-  if (isLogged) {
+async function UserButtons() {
+  const session = await getSession();
+  // TODO (Feature 4): trocar pelo total real de itens do carrinho.
+  const cartCount: number = 0;
+  if (session) {
     return (
-        <div className={styles.nav}>
-          <Link
-            href="/cart"
-            className={styles.cartBtn}
-            aria-label={cartCount > 0 ? `Carrinho, ${cartCount} ${cartCount === 1 ? "item" : "itens"}` : "Carrinho"}
-          >
-            <ShoppingCart size={20} />
-            {cartCount > 0 && <span className={styles.cartBadge} aria-hidden="true">{cartCount}</span>}
-          </Link>
-          <Link href="/account" className={styles.userBtn} aria-label="Minha Conta">
-            <User size={20} />
-          </Link>
-        </div>
-    )
+      <div className={styles.nav}>
+        <Link
+          href="/cart"
+          className={styles.cartBtn}
+          aria-label={cartCount > 0 ? `Carrinho, ${cartCount} ${cartCount === 1 ? "item" : "itens"}` : "Carrinho"}
+        >
+          <ShoppingCart size={20} />
+          {cartCount > 0 && <span className={styles.cartBadge} aria-hidden="true">{cartCount}</span>}
+        </Link>
+        <Link href="/account/vault" className={styles.userBtn} aria-label="Conta">
+          <User size={20} />
+        </Link>
+        <form action={logoutAction} style={{ display: "contents" }}>
+          <button type="submit" className={styles.userBtn} aria-label="Sair">
+            <LogOut size={20} />
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -28,16 +39,19 @@ function UserButtons({isLogged, cartCount}: { isLogged: boolean, cartCount: numb
         Entrar
       </Link>
     </div>
-  )
+  );
 }
 
 export function Header() {
-  const isLogged = true
-  const cartCount = 2
-
   return (
     <header className={styles.header}>
-      <HeaderContent userButtons={<UserButtons isLogged={isLogged} cartCount={cartCount} />} />
+      <HeaderContent
+        userButtons={
+          <Suspense fallback={<div className={styles.nav} />}>
+            <UserButtons />
+          </Suspense>
+        }
+      />
     </header>
   );
 }
