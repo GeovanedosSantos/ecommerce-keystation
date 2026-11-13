@@ -226,3 +226,7 @@ export async function removeCoupon(userId: string): Promise<void> {
     data: { couponId: null },
   });
 }
+
+export async function getCartItemCount(userId: string): Promise<number> {
+  return prisma.shoppingCartItem.count({ where: { cart: { userId } } });
+}
