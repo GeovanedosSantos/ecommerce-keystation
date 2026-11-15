@@ -1,3 +1,58 @@
+enum Category {
+  GAME
+  DLC
+  SPECIAL_EDITION
+
+  @@map("category")
+}
+
+model Genre {
+  id       String    @id @default(uuid(7)) @db.Uuid()
+  name     String    @unique @db.VarChar(100)
+  products Product[] @relation("product_genre")
+
+  @@map("genre")
+}
+
+model Product {
+  id               String   @id @default(uuid(7)) @db.Uuid
+  category         Category
+  title            String   @db.VarChar(200)
+  slug             String   @unique @db.VarChar(255)
+  description      String
+  developer        String?  @db.VarChar(150)
+  publisher        String?  @db.VarChar(150)
+  coverPath        String?  @map("cover_path") @db.VarChar(255)
+  trailerYoutubeId String?  @map("trailer_youtube_id") @db.VarChar(11)
+
+  baseProductId String?   @map("base_product_id") @db.Uuid
+  baseProduct   Product?  @relation("ProductAddons", fields: [baseProductId], references: [id], onDelete: Restrict)
+  addons        Product[] @relation("ProductAddons")
+
+  genres             Genre[]          @relation("product_genre")
+  variants           ProductVariant[]
+  systemRequirements Json?            @map("system_requirements")
+  gallery            ProductGallery[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([baseProductId])
+  @@map("product")
+}
+
+model ProductGallery {
+  id        String @id @default(uuid(7)) @db.Uuid
+  productId String @map("product_id") @db.Uuid
+  path      String @db.VarChar(255)
+  position  Int    @db.SmallInt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, position])
+  @@map("product_gallery")
+}
+
 enum ProductStatus {
   PUBLISHED
   DISABLED
@@ -14,19 +69,20 @@ enum KeyStatus {
 }
 
 model Platform {
-  id   String @id @default(uuid(7)) @db.Uuid()
-  name String @unique @db.VarChar(100)
+  id                    String  @id @default(uuid(7)) @db.Uuid()
+  name                  String  @unique @db.VarChar(100)
+  hasSystemRequirements Boolean @default(false) @map("has_system_requirements")
 
-  products Product[]
+  variants ProductVariant[]
 
   @@map("platform")
 }
 
-model Product {
+model ProductVariant {
   id String @id @default(uuid(7)) @db.Uuid()
 
-  itemId String      @map("item_id") @db.Uuid()
-  item   CatalogItem @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  productId String  @map("product_id") @db.Uuid()
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 
   platformId String   @map("platform_id") @db.Uuid()
   platform   Platform @relation(fields: [platformId], references: [id], onDelete: Restrict)
@@ -34,27 +90,29 @@ model Product {
   price  Decimal       @db.Decimal(10, 2)
   status ProductStatus @default(DISABLED)
 
+  releaseDate DateTime @map("release_date") @db.Date
+
   keys       Key[]
   orderItems OrderItem[]
   cartItems  ShoppingCartItem[]
   promotions PromotionProduct[]
 
-  @@unique([itemId, platformId])
-  @@map("product")
+  @@unique([productId, platformId])
+  @@map("product_variant")
 }
 
 model Key {
-  id          String     @id @default(uuid(7)) @db.Uuid()
-  productId   String     @map("product_id") @db.Uuid()
-  product     Product    @relation(fields: [productId], references: [id])
-  status      KeyStatus  @default(AVAILABLE)
-  keyCode     String     @unique @map("key_code") @db.VarChar(100)
-  orderItemId String?    @unique @map("order_item_id") @db.Uuid()
-  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
-  soldAt      DateTime?  @map("sold_at") @db.Timestamptz(6)
-  revealedAt  DateTime?  @map("revealed_at") @db.Timestamptz(6)
+  id          String         @id @default(uuid(7)) @db.Uuid()
+  variantId   String         @map("variant_id") @db.Uuid()
+  variant     ProductVariant @relation(fields: [variantId], references: [id])
+  status      KeyStatus      @default(AVAILABLE)
+  keyCode     String         @unique @map("key_code") @db.VarChar(100)
+  orderItemId String?        @unique @map("order_item_id") @db.Uuid()
+  orderItem   OrderItem?     @relation(fields: [orderItemId], references: [id])
+  soldAt      DateTime?      @map("sold_at") @db.Timestamptz(6)
+  revealedAt  DateTime?      @map("revealed_at") @db.Timestamptz(6)
 
-  @@index([productId])
+  @@index([variantId])
   @@index([orderItemId])
   @@map("key")
 }
