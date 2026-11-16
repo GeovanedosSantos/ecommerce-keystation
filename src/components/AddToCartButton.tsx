@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Check, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
-import { addToCartAction } from "@/app/cart/actions";
+import { addToCartAction } from "@/app/(store)/cart/actions";
 
 type Status = "idle" | "added" | "error";
 

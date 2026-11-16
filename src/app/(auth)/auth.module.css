@@ -1,0 +1,16 @@
+/* Sem Header/Sidebar: o layout ocupa a tela toda e centraliza o card nos dois eixos. */
+.authLayout {
+  flex: 1;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Sem isso o filho encolhe para a largura do conteúdo (align-items: center);
+   o max-width de cada tela continua limitando o card. */
+.authLayout > * {
+  width: 100%;
+}
