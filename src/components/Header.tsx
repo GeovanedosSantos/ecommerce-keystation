@@ -4,12 +4,13 @@ import { LogOut, ShoppingCart, User } from "lucide-react";
 import styles from "./Header.module.css";
 import { HeaderContent } from "./HeaderContent";
 import { getSession } from "@/infra/session-cookie";
+import { getCartItemCount } from "@/core/modules/cart/cart.service";
 import { logoutAction } from "@/app/logout/actions";
 
 async function UserButtons() {
   const session = await getSession();
-  // TODO (Feature 4): trocar pelo total real de itens do carrinho.
-  const cartCount: number = 0;
+  const cartCount: number = session ? await getCartItemCount(session.userId) : 0;
+
   if (session) {
     return (
       <div className={styles.nav}>

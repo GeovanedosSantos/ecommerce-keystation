@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { ShoppingCart, Star } from "lucide-react";
-import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { CoverImage, CoverBadge } from "@/components/ui/CoverImage/CoverImage";
+import { AddToCartButton } from "@/components/AddToCartButton";
 import styles from "./GameCard.module.css";
 
 interface GameCardProps {
@@ -45,9 +44,7 @@ export function GameCard({
         <div className={styles.footer}>
           <Price value={hasPromo ? promotionalPrice : price} originalValue={hasPromo ? price : null} />
 
-          <Button href={`/products/${id}`} size="icon" aria-label="Comprar">
-            <ShoppingCart size={18} />
-          </Button>
+          <AddToCartButton productId={id} title={title} />
         </div>
       </div>
     </div>
