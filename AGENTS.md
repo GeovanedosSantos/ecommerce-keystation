@@ -41,8 +41,10 @@ ecommerce-keystation/
 │   │   └── modules/           # Regras de negócio, casos de uso e serviços
 │   ├── infra/                 # Clientes e adaptadores externos (ex: Prisma client, db adapter)
 │   ├── utils/                 # Utilitários puros (formatadores, validadores, helpers)
+│   ├── test/                  # Infra compartilhada dos testes (setup e limpeza do banco de teste)
 │   └── generated/             # Artefatos gerados (ex: prisma client gerado em src/generated/prisma)
 ├── docker-compose.yml         # Configuração do PostgreSQL local
+├── vitest.config.mts          # Configuração do Vitest (carrega o .env.test)
 ├── package.json
 └── tsconfig.json              # Configurações TypeScript (alias @/* mapeado para ./src/*)
 ```
@@ -139,6 +141,39 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
 
 ---
 
+## 6. Testes
+
+Os testes usam **Vitest** e ficam em `src/`, ao lado do código que testam.
+
+### 6.1. Tipos de arquivo
+| Sufixo | Quando usar | Banco |
+| :--- | :--- | :--- |
+| `*.test.ts` | Código puro: schemas Zod, helpers, regras sem I/O. Também services com o Prisma mockado (`vi.mock("@/infra/prisma")`). | Não usa |
+| `*.int.test.ts` | Services de `src/core/modules` executados de verdade, conferindo consultas, constraints e o que foi gravado. | Banco de teste |
+
+- Um arquivo por alvo (ex: `schema.test.ts`, `service.int.test.ts`), com um `describe` por função testada.
+- `vi.mock` vale para o arquivo inteiro: **nunca** misture testes com mock e testes com banco real no mesmo arquivo.
+- Divida o arquivo (ex: `service.update.int.test.ts`) quando passar de ~400 linhas.
+- Teste validações de payload no `schema.test.ts`, e no service só o que depende do banco ou da ordem das regras.
+
+### 6.2. Banco de teste
+- Os testes `*.int.test.ts` rodam contra um banco separado (`ecommerce_db_test`), configurado no `.env.test` (ignorado pelo git), no mesmo Postgres do Docker.
+- O `src/test/global-setup.ts` aplica as migrations com `prisma migrate deploy`. O `resetDatabase()` (`src/test/db.ts`) esvazia as tabelas e deve ser chamado em `beforeEach`.
+- Os dois só rodam se o `DATABASE_URL` contiver `_test`. **Nunca** remova essa trava nem aponte os testes para o banco de desenvolvimento.
+- Não use `prisma migrate reset` nem outros comandos destrutivos no setup dos testes.
+- Cada teste cria os próprios dados (plataformas, gêneros, produtos) via service ou `prisma.*.create`. **Não** dependa do seed.
+- Chame `prisma.$disconnect()` em `afterAll` nos arquivos `*.int.test.ts`.
+
+### 6.3. Escrita dos testes
+- Nomes de teste em português, descrevendo o comportamento esperado (ex: `"recusa DLC sem baseProductId"`).
+- Erros de negócio: confira a **classe** (`ConflictError`, `UnprocessableEntityError`, `ValidationError`...) e, quando relevante, a mensagem.
+- Em erros de validação, confira o caminho do erro (`zodError.issues[].path`), não só que falhou.
+- Em casos de erro, confira também que **nada foi gravado** (ex: `expect(await prisma.product.count()).toBe(0)`).
+- Use `it.each` para variações do mesmo caso (ex: `DLC` e `SPECIAL_EDITION`, preços `0` e `-1`).
+- Use `crypto.randomUUID()` para ids inexistentes: o `z.uuid()` recusa ids inválidos como `"123"`.
+- Um teste que falha por um bug real deve levar à correção do código, nunca ao afrouxamento da asserção.
+
+---
 
 ## 7. Comandos e Scripts Úteis
 
@@ -154,5 +189,20 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
 | `npx prisma generate` | Regenera o Prisma Client |
 | `npx prisma db seed` | Executa o seed de dados de exemplo |
 | `npx prisma studio` | Abre a interface visual para gerenciar dados do banco |
+| `npm test` | Roda os testes em modo watch (Vitest) |
+| `npm run test:run` | Roda todos os testes uma vez (requer Docker e `.env.test`) |
+| `npx vitest run <arquivo>` | Roda os testes de um arquivo |
+| `npx vitest run -t "<nome>"` | Roda os testes cujo nome contém o texto |
+| `npx vitest run --exclude "**/*.int.test.ts"` | Roda só os testes que não usam banco |
 
 
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
