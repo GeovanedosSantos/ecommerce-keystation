@@ -112,7 +112,9 @@ model Key {
   soldAt      DateTime?      @map("sold_at") @db.Timestamptz(6)
   revealedAt  DateTime?      @map("revealed_at") @db.Timestamptz(6)
 
-  @@index([variantId])
+  // A vitrine procura chaves AVAILABLE de uma variant; o índice composto também
+  // atende as consultas só por variantId.
+  @@index([variantId, status])
   @@index([orderItemId])
   @@map("key")
 }
