@@ -61,13 +61,15 @@ ecommerce-keystation/
 
 ### 3.2. Estilização
 - Utilizar **CSS Modules** (`*.module.css`) associados aos componentes.
-Por ser CSS MODULES 
-- Seguir a convenção de nomenclatura **BEM** (Block Element Modifier):
+- Nomear as classes em **camelCase**, sem BEM. O CSS Module já isola as classes por arquivo, então não é preciso prefixar com o nome do componente:
   ```css
-  /* Exemplo: Button.module.css */
-  .button { ... }
-  .button__icon { ... }
-  .button--primary { ... }
+  /* Exemplo: GameCard.module.css */
+  .card { ... }
+  .cardTitle { ... }      /* elemento: nome descritivo, não .card__title */
+  .platformActive { ... } /* estado/variação: sufixo, não .platform--active */
+  ```
+  ```tsx
+  <Link className={`${styles.platform} ${active ? styles.platformActive : ""}`} />
   ```
   **Breakpoints para responsividade:**
   - `@media (min-width: 640px) ou 768px`: Telas de tablets ou celulares grandes em modo paisagem.
@@ -88,6 +90,17 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
 - Evitar o uso de `any`; criar tipagens explícitas ou inferir via Zod (`z.infer<typeof schema>`).
 - Utilizar import aliases configurados: `@/components/...`, `@/core/...`, `@/infra/...`, `@/utils/...`.
 - Não suprimir avisos do linter/compilador com comentários desnecessários (`@ts-ignore` ou `eslint-disable`), corrigindo a causa raiz.
+
+### 3.5. Cache de páginas (cacheComponents)
+- O projeto usa `cacheComponents: true`. Separe o que muda pouco (título, descrição, galeria, requisitos) do que muda a cada acesso (preço, promoção ativa, estoque).
+- A parte que muda pouco fica numa função com `"use cache"`, `cacheLife(...)` e `cacheTag(...)` (ex: `getProductContent` em `src/app/(store)/products/[slug]/data.ts`, com a tag `productCacheTag(slug)`). O que vai para o cache deve ser serializável: converta `Decimal` e `Date` no mapper.
+- A parte que muda a cada acesso vem depois de `await connection()` e é consultada em toda requisição (ex: `getVariantsAvailability`).
+- **Toda escrita que altera um dado em cache deve invalidar a tag correspondente**, senão a página mostra o conteúdo antigo até o cache expirar:
+  - Em Server Actions (ex: formulário do admin): `updateTag(productCacheTag(slug))`. Quem salvou já vê o dado novo.
+  - Em Route Handlers: `revalidateTag(productCacheTag(slug), "max")`. `updateTag` só funciona em Server Actions, e chamar `revalidateTag` sem o segundo argumento está depreciado.
+  - Se o slug mudar, invalide o antigo e o novo.
+  - Publicar uma variant, mudar a galeria ou os requisitos também conta como escrita.
+- A invalidação fica na camada do Next (Server Action / Route Handler), **nunca** nos services de `src/core/modules`, que devem continuar independentes do framework.
 
 ---
 
