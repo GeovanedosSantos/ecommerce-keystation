@@ -1,4 +1,5 @@
 import { Category, Prisma } from "@/generated/prisma/client";
+import { KeyStatus, ProductStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/infra/prisma";
 import {
     ConflictError,
@@ -14,12 +15,15 @@ import {
     variantSchema,
 } from "./schema";
 import {
+    editionSelect,
     productWithVariantsInclude,
     publishedProductInclude,
     variantWithPlatformInclude,
+    type ProductEdition,
     type ProductWithVariants,
     type PublishedProduct,
     type UpdateProductInput,
+    type VariantAvailability,
     type VariantWithPlatform,
 } from "./types";
 
@@ -61,9 +65,8 @@ export async function createProduct(payload: unknown): Promise<ProductWithVarian
 }
 
 /**
- * Vitrine pública: retorna só as variants PUBLISHED. Produto sem nenhuma variant
- * publicada é tratado como inexistente. Variant publicada sem chaves AVAILABLE
- * continua visível, mas com `inStock: false` (esgotada).
+ * Vitrine pública: retorna o produto só com as variants PUBLISHED. Produto sem nenhuma
+ * variant publicada é tratado como inexistente.
  */
 export async function getPublishedProductBySlug(slug: string): Promise<PublishedProduct> {
     const product = await prisma.product.findUnique({
@@ -75,13 +78,79 @@ export async function getPublishedProductBySlug(slug: string): Promise<Published
         throw productNotFound(slug);
     }
 
-    return {
-        ...product,
-        variants: product.variants.map(({ _count, ...variant }) => ({
-            ...variant,
-            inStock: _count.keys > 0,
-        })),
-    };
+    return product;
+}
+
+/** Preço, maior desconto ativo em `now` e estoque. Variants inexistentes ou despublicadas não voltam. */
+export async function getVariantsAvailability(
+    variantIds: string[],
+    now: Date = new Date(),
+): Promise<VariantAvailability[]> {
+    if (variantIds.length === 0) {
+        return [];
+    }
+
+    const [variants, inStockIds] = await Promise.all([
+        prisma.productVariant.findMany({
+            where: { id: { in: variantIds }, status: ProductStatus.PUBLISHED },
+            select: {
+                id: true,
+                price: true,
+                promotions: {
+                    where: {
+                        promotion: { isActive: true, startsAt: { lte: now }, endsAt: { gte: now } },
+                    },
+                    orderBy: { discountPercent: "desc" },
+                    take: 1,
+                    select: { discountPercent: true },
+                },
+            },
+        }),
+        variantIdsInStock(variantIds),
+    ]);
+
+    return variants.map(({ id, price, promotions }) => ({
+        variantId: id,
+        price,
+        discountPercent: promotions[0]?.discountPercent ?? null,
+        inStock: inStockIds.has(id),
+    }));
+}
+
+export async function getPublishedEditions(
+    product: Pick<PublishedProduct, "id" | "category" | "baseProductId">,
+): Promise<ProductEdition[]> {
+    if (product.category === Category.DLC) {
+        return [];
+    }
+
+    // Numa edição especial, a família é a do jogo base; no jogo base, é ele mesmo.
+    const baseId = product.baseProductId ?? product.id;
+
+    return prisma.product.findMany({
+        where: {
+            id: { not: product.id },
+            OR: [{ id: baseId }, { baseProductId: baseId, category: Category.SPECIAL_EDITION }],
+            variants: { some: { status: ProductStatus.PUBLISHED } },
+        },
+        // A ordem do enum no Postgres é GAME, DLC, SPECIAL_EDITION: o jogo base vem primeiro.
+        orderBy: [{ category: "asc" }, { title: "asc" }],
+        select: editionSelect,
+    });
+}
+
+// `take: 1` aninhado num findMany de várias variants não vira LIMIT no SQL; findFirst por variant vira.
+async function variantIdsInStock(variantIds: string[]): Promise<Set<string>> {
+    const keys = await Promise.all(
+        variantIds.map((variantId) =>
+            prisma.key.findFirst({
+                where: { variantId, status: KeyStatus.AVAILABLE },
+                select: { variantId: true },
+            }),
+        ),
+    );
+
+    return new Set(keys.flatMap((key) => (key ? [key.variantId] : [])));
 }
 
 const currentProductSelect = {

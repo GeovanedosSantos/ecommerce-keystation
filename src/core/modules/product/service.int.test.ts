@@ -1,8 +1,18 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { ConflictError, UnprocessableEntityError, ValidationError } from "@/core/errors";
+import {
+    ConflictError,
+    NotFoundError,
+    UnprocessableEntityError,
+    ValidationError,
+} from "@/core/errors";
 import { prisma } from "@/infra/prisma";
 import { resetDatabase } from "@/test/db";
-import { createProduct, createVariant } from "./service";
+import {
+    createProduct,
+    createVariant,
+    getPublishedProductBySlug,
+    getVariantsAvailability,
+} from "./service";
 
 beforeEach(resetDatabase);
 afterAll(() => prisma.$disconnect());
@@ -161,5 +171,159 @@ describe("createVariant", () => {
         const created = await createVariant("hollow-knight", variant(steam.id, 59.9));
 
         expect(created.price.toFixed(2)).toBe("59.90");
+    });
+});
+
+describe("getPublishedProductBySlug", () => {
+    it("lança NotFoundError para slug inexistente", async () => {
+        const error = await errorOf(getPublishedProductBySlug("nao-existe"));
+
+        expect(error).toBeInstanceOf(NotFoundError);
+    });
+
+    it("trata produto sem variant publicada como inexistente", async () => {
+        const steam = await createPlatform();
+        await createProduct({ ...game, variants: [{ ...variant(steam.id), status: "DISABLED" }] });
+
+        const error = await errorOf(getPublishedProductBySlug("hollow-knight"));
+
+        expect(error).toBeInstanceOf(NotFoundError);
+    });
+
+    it("retorna só as variants publicadas, ordenadas pela plataforma", async () => {
+        const [xbox, steam, epic] = await Promise.all([
+            createPlatform("Xbox"),
+            createPlatform("Steam"),
+            createPlatform("Epic"),
+        ]);
+        await createProduct({
+            ...game,
+            variants: [
+                { ...variant(xbox.id), status: "PUBLISHED" },
+                { ...variant(steam.id), status: "PUBLISHED" },
+                { ...variant(epic.id), status: "DISABLED" },
+            ],
+        });
+
+        const product = await getPublishedProductBySlug("hollow-knight");
+
+        expect(product.variants.map(({ platform }) => platform.name)).toEqual(["Steam", "Xbox"]);
+    });
+});
+
+describe("getVariantsAvailability", () => {
+    const DAY = 24 * 60 * 60 * 1000;
+
+    /** Cria o Hollow Knight com uma variant Steam publicada e `keys` chaves disponíveis. */
+    async function publishedVariant(keys = 1) {
+        const steam = await createPlatform();
+        await createProduct({ ...game, variants: [{ ...variant(steam.id), status: "PUBLISHED" }] });
+        const published = await prisma.productVariant.findFirstOrThrow();
+
+        await prisma.key.createMany({
+            data: Array.from({ length: keys }, (_, index) => ({
+                variantId: published.id,
+                keyCode: `HK-${index}`,
+            })),
+        });
+
+        return published;
+    }
+
+    /** Liga a variant a uma promoção; por padrão ativa e válida de ontem até amanhã. */
+    async function promote(
+        variantId: string,
+        discountPercent: number,
+        promotion: { isActive?: boolean; startsAt?: Date; endsAt?: Date } = {},
+    ) {
+        const now = Date.now();
+        await prisma.promotion.create({
+            data: {
+                name: `Promoção ${discountPercent}%`,
+                startsAt: new Date(now - DAY),
+                endsAt: new Date(now + DAY),
+                ...promotion,
+                products: { create: { variantId, discountPercent } },
+            },
+        });
+    }
+
+    it("marca como esgotada a variant sem chaves disponíveis", async () => {
+        const published = await publishedVariant(0);
+
+        const [availability] = await getVariantsAvailability([published.id]);
+
+        expect(availability).toMatchObject({ inStock: false, discountPercent: null });
+        expect(availability.price.toFixed(2)).toBe("49.90");
+    });
+
+    it("não conta chaves vendidas como estoque", async () => {
+        const published = await publishedVariant(1);
+        await prisma.key.updateMany({ data: { status: "SOLD" } });
+
+        const [availability] = await getVariantsAvailability([published.id]);
+
+        expect(availability.inStock).toBe(false);
+    });
+
+    it("calcula o estoque de cada variant separadamente", async () => {
+        const withKeys = await publishedVariant(3);
+        const epic = await createPlatform("Epic Games");
+        const { slug } = await prisma.product.findUniqueOrThrow({
+            where: { id: withKeys.productId },
+        });
+        const withoutKeys = await createVariant(slug, {
+            ...variant(epic.id),
+            status: "PUBLISHED",
+        });
+
+        const availability = await getVariantsAvailability([withKeys.id, withoutKeys.id]);
+
+        expect(availability).toHaveLength(2);
+        expect(availability).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ variantId: withKeys.id, inStock: true }),
+                expect.objectContaining({ variantId: withoutKeys.id, inStock: false }),
+            ]),
+        );
+    });
+
+    it("retorna o maior desconto entre as promoções ativas", async () => {
+        const published = await publishedVariant();
+        await promote(published.id, 10);
+        await promote(published.id, 35);
+
+        const [availability] = await getVariantsAvailability([published.id]);
+
+        expect(availability).toMatchObject({ inStock: true, discountPercent: 35 });
+    });
+
+    it.each([
+        ["inativa", { isActive: false }],
+        [
+            "que ainda não começou",
+            { startsAt: new Date(Date.now() + DAY), endsAt: new Date(Date.now() + 2 * DAY) },
+        ],
+        [
+            "já encerrada",
+            { startsAt: new Date(Date.now() - 2 * DAY), endsAt: new Date(Date.now() - DAY) },
+        ],
+    ])("ignora promoção %s", async (_label, promotion) => {
+        const published = await publishedVariant();
+        await promote(published.id, 50, promotion);
+
+        const [availability] = await getVariantsAvailability([published.id]);
+
+        expect(availability.discountPercent).toBeNull();
+    });
+
+    it("não retorna variant despublicada nem id inexistente", async () => {
+        const published = await publishedVariant();
+        await prisma.productVariant.update({
+            where: { id: published.id },
+            data: { status: "DISABLED" },
+        });
+
+        expect(await getVariantsAvailability([published.id, crypto.randomUUID()])).toEqual([]);
     });
 });
