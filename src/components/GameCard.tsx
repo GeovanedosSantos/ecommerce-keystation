@@ -12,7 +12,7 @@ interface GameCardProps {
   price: number;
   promotionalPrice?: number | null;
   developer: string;
-  categoryName: string;
+  platform: string;
 }
 
 export function GameCard({
@@ -23,21 +23,21 @@ export function GameCard({
   price,
   promotionalPrice,
   developer,
-  categoryName,
+  platform,
 }: GameCardProps) {
   const hasPromo = promotionalPrice && promotionalPrice < price;
   const discount = hasPromo ? Math.round(((price - promotionalPrice) / price) * 100) : 0;
 
   return (
     <div className={styles.card}>
-      <CoverImage src={coverImage} alt={title} href={`/products/${id}`}>
+      <CoverImage src={coverImage} alt={title} href={`/products/${slug}`}>
         {hasPromo && <CoverBadge tone="primary">-{discount}%</CoverBadge>}
-        <CoverBadge position="bottom-left">{categoryName}</CoverBadge>
+        <CoverBadge position="bottom-left">{platform}</CoverBadge>
       </CoverImage>
 
       <div className={styles.content}>
         <span className={styles.developer}>{developer}</span>
-        <Link href={`/products/${id}`} className={styles.title}>
+        <Link href={`/products/${slug}`} className={styles.title}>
           {title}
         </Link>
 
