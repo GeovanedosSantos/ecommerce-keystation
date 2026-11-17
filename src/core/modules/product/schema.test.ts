@@ -4,8 +4,10 @@ import { createProductSchema, variantSchema } from "./schema";
 type Unit = "GB" | "MB";
 
 const requirements = (ram: [number, Unit], disk: [number, Unit]) => ({
+    os: "Windows 10 64 bits",
     processor: "Intel Core i5",
     ram: { value: ram[0], unit: ram[1] },
+    gpu: "GTX 1060 6 GB",
     disk_space: { value: disk[0], unit: disk[1] },
 });
 
@@ -79,6 +81,19 @@ describe("systemRequirements", () => {
         expect(equal.success).toBe(true);
     });
 
+    it.each(["os", "gpu"])("recusa requisitos sem %s", (field) => {
+        const block = Object.fromEntries(
+            Object.entries(requirements([8, "GB"], [50, "GB"])).filter(([key]) => key !== field),
+        );
+
+        const result = createProductSchema.safeParse(
+            gameWith({ minimum: block, recommended: requirements([8, "GB"], [50, "GB"]) }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(issuePaths(result)).toEqual([`systemRequirements.minimum.${field}`]);
+    });
+
     it("aceita recomendado maior ou igual ao mínimo", () => {
         const result = createProductSchema.safeParse(
             gameWith({
@@ -88,6 +103,35 @@ describe("systemRequirements", () => {
         );
 
         expect(result.success).toBe(true);
+    });
+});
+
+describe("imagens do produto", () => {
+    const gameWithImages = (coverPath: string, galleryPath = coverPath) => ({
+        category: "GAME",
+        title: "Hollow Knight",
+        description: "Metroidvania",
+        coverPath,
+        gallery: [{ path: galleryPath, position: 0 }],
+    });
+
+    it.each([
+        "/covers/hollow-knight.jpg",
+        "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/capsule_616x353.jpg",
+        "https://images.igdb.com/igdb/image/upload/t_1080p/sc1abc.jpg",
+    ])("aceita %s", (path) => {
+        expect(createProductSchema.safeParse(gameWithImages(path)).success).toBe(true);
+    });
+
+    it.each([
+        ["host fora da lista", "https://cdn.cloudflare.steamstatic.com/steam/apps/367520/header.jpg"],
+        ["caminho fora do liberado no host", "https://shared.akamai.steamstatic.com/outra-pasta/capa.jpg"],
+        ["http sem TLS", "http://images.igdb.com/igdb/image/upload/t_1080p/sc1abc.jpg"],
+    ])("recusa %s na capa e na galeria", (_label, path) => {
+        const result = createProductSchema.safeParse(gameWithImages(path));
+
+        expect(result.success).toBe(false);
+        expect(issuePaths(result)).toEqual(["coverPath", "gallery.0.path"]);
     });
 });
 
