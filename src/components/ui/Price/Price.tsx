@@ -5,7 +5,7 @@ interface PriceProps {
   value: number;
   /** Preço cheio; só é exibido (riscado) quando maior que `value`. */
   originalValue?: number | null;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 function formatBRL(amount: number) {

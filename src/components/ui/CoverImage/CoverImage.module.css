@@ -9,14 +9,21 @@
 }
 
 /* Tamanhos */
+/* 16:9, proporção da capsule da Steam (616x353): a capa aparece inteira em qualquer largura de coluna. */
 .card {
   width: 100%;
-  height: 180px;
+  aspect-ratio: 16 / 9;
 }
 
 .banner {
   width: 100%;
   height: 160px;
+}
+
+/* Capa vertical 3:4 (ex: IGDB 528x704): a imagem aparece inteira. */
+.poster {
+  width: 100%;
+  aspect-ratio: 3 / 4;
 }
 
 .thumb {

@@ -6,6 +6,7 @@
 }
 
 /* Largura máxima */
+.xxl { max-width: 1600px; }
 .xl { max-width: 1280px; }
 .lg { max-width: 900px; }
 .md { max-width: 800px; }
