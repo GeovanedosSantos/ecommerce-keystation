@@ -1,0 +1,92 @@
+.requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background-color: var(--bg-surface);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Mobile: cada componente vira um cartão com os rótulos Mínimos/Recomendados. */
+.head {
+  display: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.row th {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.row td {
+  color: var(--text-main);
+}
+
+.row td::before {
+  content: attr(data-label) ": ";
+  color: var(--text-secondary);
+}
+
+@media (min-width: 768px) {
+  .head {
+    display: table-row;
+    background-color: var(--bg-main);
+  }
+
+  .head th {
+    padding: 0.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .head th:first-child {
+    width: 180px;
+  }
+
+  .row {
+    display: table-row;
+    border-top: none;
+  }
+
+  .row th,
+  .row td {
+    padding: 0.5rem 0.875rem;
+    vertical-align: top;
+  }
+
+  .row th {
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  .row td::before {
+    content: none;
+  }
+}

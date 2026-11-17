@@ -53,7 +53,6 @@ function NavList({ pathname, onNavigate }: { pathname: string | null, onNavigate
   )
 }
 
-// Com cacheComponents, o usePathname suspende em rotas dinâmicas como /products/[id].
 // Fica isolado aqui, dentro de um <Suspense>, para só o destaque do link ativo esperar.
 function ActiveNavList({ onNavigate }: { onNavigate: () => void }) {
   const pathname = usePathname()
