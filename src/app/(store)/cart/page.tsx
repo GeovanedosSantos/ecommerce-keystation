@@ -13,109 +13,105 @@ import CouponForm from "./CouponForm";
 import styles from "./cart.module.css";
 
 function formatBRL(cents: number) {
-  return `R$ ${(cents / 100).toFixed(2)}`;
+    return `R$ ${(cents / 100).toFixed(2)}`;
 }
 
 async function CartContent() {
-  const session = await getSession();
-  if (!session) redirect("/login");
+    const session = await getSession();
+    if (!session) redirect("/login");
 
-  const cart = await getCart(session.userId);
-  const { totals } = cart;
+    const cart = await getCart(session.userId);
+    const { totals } = cart;
 
-  if (cart.items.length === 0) {
-    return (
-      <>
-        <SectionHeader
-          level="page"
-          icon={<ShoppingBag size={28} />}
-          title="Meu Carrinho (0)"
-        />
-        <p>Seu carrinho está vazio.</p>
-        <Button href="/catalog" inline>
-          Explorar o catálogo
-        </Button>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <SectionHeader
-        level="page"
-        icon={<ShoppingBag size={28} />}
-        title={`Meu Carrinho (${cart.items.length})`}
-      />
-
-      <div className={styles.layout}>
-        <div className={styles.itemsList}>
-          {cart.items.map((item) => (
-            <div key={item.productId} className={styles.cartItem}>
-              <CoverImage
-                src={item.coverPath}
-                alt={item.title}
-                size="thumb"
-              />
-              <div className={styles.itemDetails}>
-                <h3>{item.title}</h3>
-                <span className={styles.platform}>Ativação Steam (PC)</span>
-              </div>
-              <Price
-                value={item.priceCents / 100}
-                originalValue={item.originalPriceCents / 100}
-                size="md"
-              />
-              <form action={removeFromCartAction.bind(null, item.productId)}>
-                <Button
-                  type="submit"
-                  variant="danger"
-                  size="icon"
-                  aria-label={`Remover ${item.title}`}
-                >
-                  <Trash2 size={18} />
+    if (cart.items.length === 0) {
+        return (
+            <>
+                <SectionHeader
+                    level="page"
+                    icon={<ShoppingBag size={28} />}
+                    title="Meu Carrinho (0)"
+                />
+                <p>Seu carrinho está vazio.</p>
+                <Button href="/catalog" inline>
+                    Explorar o catálogo
                 </Button>
-              </form>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <SectionHeader
+                level="page"
+                icon={<ShoppingBag size={28} />}
+                title={`Meu Carrinho (${cart.items.length})`}
+            />
+
+            <div className={styles.layout}>
+                <div className={styles.itemsList}>
+                    {cart.items.map((item) => (
+                        <div key={item.variantId} className={styles.cartItem}>
+                            <CoverImage src={item.coverPath} alt={item.title} size="thumb" />
+                            <div className={styles.itemDetails}>
+                                <h3>{item.title}</h3>
+                                <span className={styles.platform}>Ativação Steam (PC)</span>
+                            </div>
+                            <Price
+                                value={item.priceCents / 100}
+                                originalValue={item.originalPriceCents / 100}
+                                size="md"
+                            />
+                            <form action={removeFromCartAction.bind(null, item.variantId)}>
+                                <Button
+                                    type="submit"
+                                    variant="danger"
+                                    size="icon"
+                                    aria-label={`Remover ${item.title}`}
+                                >
+                                    <Trash2 size={18} />
+                                </Button>
+                            </form>
+                        </div>
+                    ))}
+                </div>
+
+                <div className={styles.summaryBox}>
+                    <h2>Resumo do Pedido</h2>
+
+                    <CouponForm appliedCode={cart.coupon?.code ?? null} />
+
+                    <div className={styles.summaryRow}>
+                        <span>Subtotal</span>
+                        <span>{formatBRL(totals.subtotalCents)}</span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span>Desconto</span>
+                        <span className={styles.discount}>
+                            {totals.discountCents > 0
+                                ? `- ${formatBRL(totals.discountCents)}`
+                                : "R$ 0,00"}
+                        </span>
+                    </div>
+                    <div className={`${styles.summaryRow} ${styles.totalRow}`}>
+                        <span>Total</span>
+                        <span>{formatBRL(totals.totalCents)}</span>
+                    </div>
+
+                    <Button href="/checkout">
+                        Ir para o Checkout <ArrowRight size={18} />
+                    </Button>
+                </div>
             </div>
-          ))}
-        </div>
-
-        <div className={styles.summaryBox}>
-          <h2>Resumo do Pedido</h2>
-
-          <CouponForm appliedCode={cart.coupon?.code ?? null} />
-
-          <div className={styles.summaryRow}>
-            <span>Subtotal</span>
-            <span>{formatBRL(totals.subtotalCents)}</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span>Desconto</span>
-            <span className={styles.discount}>
-              {totals.discountCents > 0
-                ? `- ${formatBRL(totals.discountCents)}`
-                : "R$ 0,00"}
-            </span>
-          </div>
-          <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-            <span>Total</span>
-            <span>{formatBRL(totals.totalCents)}</span>
-          </div>
-
-          <Button href="/checkout">
-            Ir para o Checkout <ArrowRight size={18} />
-          </Button>
-        </div>
-      </div>
-    </>
-  );
+        </>
+    );
 }
 
 export default function CartPage() {
-  return (
-    <PageContainer>
-      <Suspense fallback={<p>Carregando carrinho...</p>}>
-        <CartContent />
-      </Suspense>
-    </PageContainer>
-  );
+    return (
+        <PageContainer>
+            <Suspense fallback={<p>Carregando carrinho...</p>}>
+                <CartContent />
+            </Suspense>
+        </PageContainer>
+    );
 }
