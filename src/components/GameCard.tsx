@@ -6,6 +6,7 @@ import styles from "./GameCard.module.css";
 
 interface GameCardProps {
   id: string;
+  variantId?: string;
   title: string;
   slug: string;
   coverImage: string;
@@ -17,6 +18,7 @@ interface GameCardProps {
 
 export function GameCard({
   id,
+  variantId,
   title,
   slug,
   coverImage,
@@ -44,7 +46,7 @@ export function GameCard({
         <div className={styles.footer}>
           <Price value={hasPromo ? promotionalPrice : price} originalValue={hasPromo ? price : null} />
 
-          <AddToCartButton productId={id} title={title} />
+          <AddToCartButton variantId={variantId} title={title} />
         </div>
       </div>
     </div>
