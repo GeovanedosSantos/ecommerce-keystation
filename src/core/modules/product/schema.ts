@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Category, ProductStatus } from "@/generated/prisma/enums";
+import { isAllowedRemoteImage, REMOTE_IMAGE_PATTERNS } from "@/utils/remote-images";
 import { slugify } from "./slugify";
 
 const quantitySchema = z.strictObject({
@@ -8,15 +9,17 @@ const quantitySchema = z.strictObject({
 });
 
 const requirementsBlockSchema = z.strictObject({
+    os: z.string().trim().min(1),
     processor: z.string().trim().min(1),
     ram: quantitySchema,
+    gpu: z.string().trim().min(1),
     disk_space: quantitySchema,
 });
 
 const toMB = ({ value, unit }: z.infer<typeof quantitySchema>) =>
     unit === "GB" ? value * 1024 : value;
 
-const systemRequirementsSchema = z
+export const systemRequirementsSchema = z
     .strictObject({ minimum: requirementsBlockSchema, recommended: requirementsBlockSchema })
     .superRefine(({ minimum, recommended }, ctx) => {
         for (const field of ["ram", "disk_space"] as const) {
@@ -59,23 +62,20 @@ export const updateVariantSchema = z
     .partial()
     .refine(atLeastOneField, atLeastOneFieldMessage);
 
-const isHttpsUrl = (value: string) => {
-    try {
-        return new URL(value).protocol === "https:";
-    } catch {
-        return false;
-    }
-};
+const allowedHosts = REMOTE_IMAGE_PATTERNS.map(({ hostname }) => hostname).join(", ");
 
-/** Caminho relativo ao site (ex: `/images/capa.jpg`) ou URL `https://`. */
+/**
+ * Caminho relativo ao site (ex: `/covers/capa.jpg`) ou URL de um host liberado no `next/image`.
+ * Uma URL de outro host seria gravada, mas quebraria a página do produto ao renderizar.
+ */
 const assetPathSchema = z
     .string()
     .trim()
     .min(1)
     .max(255)
     .refine(
-        (value) => /^\/(?!\/)[\w\-./%]+$/.test(value) || isHttpsUrl(value),
-        "Informe um caminho relativo (começando com /) ou uma URL https://",
+        (value) => /^\/(?!\/)[\w\-./%]+$/.test(value) || isAllowedRemoteImage(value),
+        `Informe um caminho relativo (começando com /) ou uma URL https:// de um destes hosts: ${allowedHosts}`,
     );
 
 const galleryItemSchema = z.strictObject({

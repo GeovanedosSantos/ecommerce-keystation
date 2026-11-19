@@ -20,7 +20,6 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
   const openButtonRef = useRef<HTMLButtonElement>(null)
 
   // A busca fecha em qualquer navegação. O usePathname fica no OnNavigate, dentro de um <Suspense>,
-  // para a Header não suspender em rotas dinâmicas como /products/[id].
   const closeOnNavigate = useCallback(() => setOpen(false), [])
 
   // Os itens atrás da busca ficam inert, então ela não pode continuar aberta no desktop.

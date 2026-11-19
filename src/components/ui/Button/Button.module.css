@@ -77,3 +77,12 @@
 .danger:hover {
   color: var(--danger);
 }
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primary:disabled:hover {
+  background-color: var(--primary);
+}

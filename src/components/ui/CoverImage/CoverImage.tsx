@@ -6,8 +6,16 @@ import styles from "./CoverImage.module.css";
 interface CoverImageProps {
   src?: string | null;
   alt: string;
-  /** card = 100% x 180px, banner = 100% x 160px, thumb = 100 x 65px arredondado. */
-  size?: "card" | "banner" | "thumb";
+  /**
+   * card = 100% em 16:9, banner = 100% x 160px, thumb = 100 x 65px arredondado,
+   * poster = 100% de largura em 3:4 (proporção das capas do IGDB, sem corte).
+   */
+  size?: "card" | "banner" | "thumb" | "poster";
+  /**
+   * Largura em que a imagem é exibida, para o Next escolher o arquivo certo
+   * (ex: "(min-width: 1024px) 25vw, 100vw"). Sem ele, usa o padrão de cada tamanho.
+   */
+  sizes?: string;
   /** Quando informado, a capa inteira vira um link. */
   href?: string;
   /** Selos (`<CoverBadge>`) sobre a imagem. */
@@ -16,12 +24,25 @@ interface CoverImageProps {
 
 const FALLBACK_SRC = "/globe.svg";
 
+const DEFAULT_SIZES: Record<NonNullable<CoverImageProps["size"]>, string> = {
+  card: "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw",
+  poster: "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw",
+  banner: "100vw",
+  thumb: "100px",
+};
+
 /** Imagem de capa de jogo, com selos opcionais por cima. */
-export function CoverImage({ src, alt, size = "card", href, children }: CoverImageProps) {
+export function CoverImage({ src, alt, size = "card", sizes, href, children }: CoverImageProps) {
   const classes = `${styles.cover} ${styles[size]}`;
   const content = (
     <>
-      <Image src={src || FALLBACK_SRC} alt={alt} fill className={styles.image} />
+      <Image
+        src={src || FALLBACK_SRC}
+        alt={alt}
+        fill
+        sizes={sizes ?? DEFAULT_SIZES[size]}
+        className={styles.image}
+      />
       {children}
     </>
   );

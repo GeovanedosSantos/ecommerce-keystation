@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import styles from "./PageContainer.module.css";
 
-type Width = "xl" | "lg" | "md" | "sm";
+type Width = "xxl" | "xl" | "lg" | "md" | "sm";
 type Padding = "md" | "lg" | "xl" | "2xl";
 type Gap = "none" | "sm" | "md" | "lg";
 
 interface PageContainerProps {
-  /** Largura máxima: xl = 1280px, lg = 900px, md = 800px, sm = 480px. */
+  /** Largura máxima: xxl = 1600px, xl = 1280px, lg = 900px, md = 800px, sm = 480px. */
   width?: Width;
   /** Espaçamento vertical: md = 2rem, lg = 2.5rem, xl = 3rem, 2xl = 4rem. */
   paddingY?: Padding;
