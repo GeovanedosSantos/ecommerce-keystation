@@ -1,20 +1,30 @@
 'use client'
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { ChevronDown, Filter } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { parseCatalogQuery, TYPE_BY_CATEGORY, type CatalogQuery } from "@/core/modules/catalog/schema";
 import { useCatalogQuery } from "../CatalogQueryContext";
 import { HiddenQueryFields } from "../HiddenQueryFields";
 import { TYPE_OPTIONS, type CatalogFilterOptions, type FilterOption } from "../options";
-import { useQueryText } from "../useQueryText";
 import { CATALOG_PATH } from "../url";
+import { PriceRange } from "./PriceRange";
 import styles from "./CatalogFilters.module.css";
 
-const FILTER_PARAMS = ["genre", "platform", "developer", "type", "sale", "min", "max"];
-
-const centsToText = (cents: number | undefined) => (cents === undefined ? "" : String(cents / 100));
+/** Campos que este formulário envia; o resto da consulta (incluindo o preço) vai oculto. */
+const FILTER_PARAMS = ["genre", "platform", "developer", "type", "sale"];
 
 const FILTERS_BODY_ID = "catalog-filters-body";
+const DEVELOPER_ID = "catalog-developer";
+
+const NO_FILTERS = {
+  genres: [],
+  platforms: [],
+  developers: [],
+  categories: [],
+  onSale: false,
+  minPriceCents: undefined,
+  maxPriceCents: undefined,
+} satisfies Partial<CatalogQuery>;
 
 /** A faixa de preço conta como um filtro. */
 function countActiveFilters(query: CatalogQuery): number {
@@ -62,46 +72,48 @@ function CheckboxGroup({ legend, name, options, selected, onChange }: CheckboxGr
   );
 }
 
-/** O preço só aplica no Enter ou no "Aplicar", para não navegar a cada dígito. */
 export function CatalogFilters({ options }: { options: CatalogFilterOptions }) {
   const { query, update } = useCatalogQuery();
-  const [min, setMin] = useQueryText(centsToText(query.minPriceCents));
-  const [max, setMax] = useQueryText(centsToText(query.maxPriceCents));
   const [isOpen, setOpen] = useState(false);
   const activeCount = countActiveFilters(query);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const { minPriceCents, maxPriceCents } = parseCatalogQuery({ min, max });
-    update({ minPriceCents, maxPriceCents });
-  }
-
   return (
-    <form action={CATALOG_PATH} className={styles.panel} aria-label="Filtros" onSubmit={handleSubmit}>
+    <form action={CATALOG_PATH} className={styles.panel} aria-label="Filtros">
       <HiddenQueryFields query={query} omit={FILTER_PARAMS} />
 
-      {/* Título no desktop, botão de recolher no mobile. */}
-      <h2 className={styles.title}>
-        <Filter size={16} aria-hidden="true" /> Filtros
-      </h2>
-      <button
-        type="button"
-        className={styles.toggle}
-        aria-expanded={isOpen}
-        aria-controls={FILTERS_BODY_ID}
-        onClick={() => setOpen((open) => !open)}
-      >
-        <Filter size={16} aria-hidden="true" />
-        Filtros{activeCount > 0 && ` (${activeCount})`}
-        <ChevronDown
-          size={18}
-          aria-hidden="true"
-          className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}
-        />
-      </button>
+      <div className={styles.header}>
+        {/* Título no desktop, botão de recolher no mobile. */}
+        <h2 className={styles.title}>
+          <Filter size={16} aria-hidden="true" /> Filtros
+        </h2>
+        <button
+          type="button"
+          className={styles.toggle}
+          aria-expanded={isOpen}
+          aria-controls={FILTERS_BODY_ID}
+          onClick={() => setOpen((open) => !open)}
+        >
+          <Filter size={16} aria-hidden="true" />
+          Filtros{activeCount > 0 && ` (${activeCount})`}
+          <ChevronDown
+            size={18}
+            aria-hidden="true"
+            className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}
+          />
+        </button>
+        {activeCount > 0 && (
+          <button
+            type="button"
+            className={styles.clear}
+            aria-label="Limpar filtros"
+            onClick={() => update(NO_FILTERS)}
+          >
+            Limpar
+          </button>
+        )}
+      </div>
 
       <div id={FILTERS_BODY_ID} className={`${styles.body} ${isOpen ? "" : styles.bodyClosed}`}>
-
         <CheckboxGroup
           legend="Gênero"
           name="genre"
@@ -126,59 +138,59 @@ export function CatalogFilters({ options }: { options: CatalogFilterOptions }) {
           onChange={(types) => update({ categories: parseCatalogQuery({ type: types }).categories })}
         />
 
-        <CheckboxGroup
-          legend="Desenvolvedora"
-          name="developer"
-          options={options.developers}
-          selected={query.developers}
-          onChange={(developers) => update({ developers })}
-        />
-
         <fieldset className={styles.group}>
-          <legend className={styles.legend}>Oferta</legend>
-          <label className={styles.checkbox}>
-            <input
-              type="checkbox"
-              name="sale"
-              value="1"
-              checked={query.onSale}
-              onChange={(event) => update({ onSale: event.target.checked })}
-            />
-            Somente em oferta
-          </label>
+          <legend className={styles.legend}>Faixa de preço</legend>
+          <PriceRange
+            minPriceCents={query.minPriceCents}
+            maxPriceCents={query.maxPriceCents}
+            onCommit={(minPriceCents, maxPriceCents) => update({ minPriceCents, maxPriceCents })}
+          />
         </fieldset>
 
-        <fieldset className={styles.group}>
-          <legend className={styles.legend}>Faixa de preço (R$)</legend>
-          <div className={styles.price}>
-            <input
-              type="number"
-              name="min"
-              min={0}
-              step={0.01}
-              inputMode="decimal"
-              placeholder="Mín."
-              aria-label="Preço mínimo"
-              value={min}
-              onChange={(event) => setMin(event.target.value)}
-            />
-            <span aria-hidden="true">até</span>
-            <input
-              type="number"
-              name="max"
-              min={0}
-              step={0.01}
-              inputMode="decimal"
-              placeholder="Máx."
-              aria-label="Preço máximo"
-              value={max}
-              onChange={(event) => setMax(event.target.value)}
-            />
+        {options.developers.length > 0 && (
+          <div className={styles.group}>
+            <label htmlFor={DEVELOPER_ID} className={styles.legend}>
+              Desenvolvedora
+            </label>
+            <div className={styles.selectWrapper}>
+              <select
+                id={DEVELOPER_ID}
+                name="developer"
+                className={styles.select}
+                value={query.developers[0] ?? ""}
+                onChange={(event) =>
+                  update({ developers: event.target.value ? [event.target.value] : [] })
+                }
+              >
+                <option value="">Todas</option>
+                {options.developers.map((developer) => (
+                  <option key={developer.slug} value={developer.slug}>
+                    {developer.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className={styles.selectChevron} size={18} aria-hidden="true" />
+            </div>
           </div>
+        )}
+
+        <label className={styles.checkbox}>
+          <input
+            type="checkbox"
+            name="sale"
+            value="1"
+            checked={query.onSale}
+            onChange={(event) => update({ onSale: event.target.checked })}
+          />
+          Só jogos em oferta
+        </label>
+
+        {/* Sem JavaScript os filtros não aplicam sozinhos. */}
+        <noscript>
           <Button type="submit" size="sm">
-            Aplicar
+            Aplicar filtros
           </Button>
-        </fieldset>
+        </noscript>
       </div>
     </form>
   );
