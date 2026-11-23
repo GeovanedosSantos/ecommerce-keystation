@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from "lucide-react";
+import { CheckCircle2, KeyRound, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import { MOCK_ORDER_NUMBER } from "@/utils/mock/orders";

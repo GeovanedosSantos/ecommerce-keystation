@@ -12,9 +12,9 @@ import { useSidebar } from "./sidebar/SidebarContext";
 const SEARCH_ID = "header-search";
 
 export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
-  const sidebar = useSidebar()
+  const { isOpen: sidebarOpen, isMobile, triggerRef: sidebarTriggerRef } = useSidebar()
   // Mobile: o sidebar cobre a Header, então nada dela pode receber foco por baixo dele.
-  const covered = sidebar.isOpen && sidebar.isMobile
+  const covered = sidebarOpen && isMobile
   const [isOpen, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const openButtonRef = useRef<HTMLButtonElement>(null)
@@ -24,7 +24,7 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
 
   // Os itens atrás da busca ficam inert, então ela não pode continuar aberta no desktop.
   // Usa o mesmo isMobile do sidebar para os dois nunca discordarem do breakpoint.
-  if (isOpen && !sidebar.isMobile) {
+  if (isOpen && !isMobile) {
     setOpen(false)
   }
 
@@ -51,10 +51,10 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
     <>
       <OnNavigate onNavigate={closeOnNavigate} />
       <div
-        className={`${styles.wrapperLeft} ${sidebar.isOpen ? styles.wrapperLeftOpen : ''}`}
+        className={`${styles.wrapperLeft} ${sidebarOpen ? styles.wrapperLeftOpen : ''}`}
         inert={isOpen || covered}
       >
-        <SidebarButton ref={sidebar.triggerRef} />
+        <SidebarButton ref={sidebarTriggerRef} />
         <Logo />
       </div>
 

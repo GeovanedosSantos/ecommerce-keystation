@@ -1,4 +1,4 @@
-import { CreditCard, QrCode, FileText, Lock, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { CreditCard, QrCode, FileText, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";

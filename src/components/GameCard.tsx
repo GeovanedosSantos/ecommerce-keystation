@@ -17,7 +17,6 @@ interface GameCardProps {
 }
 
 export function GameCard({
-  id,
   variantId,
   title,
   slug,
