@@ -1,19 +1,46 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { GameCard } from "@/components/GameCard";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
-import { parseCatalogQuery, type SearchParamsInput } from "@/core/modules/catalog/schema";
-import { GAMES } from "@/utils/mock/games";
+import {
+  parseCatalogQuery,
+  type CatalogQuery,
+  type SearchParamsInput,
+} from "@/core/modules/catalog/schema";
+import { searchCatalog } from "@/core/modules/catalog/service";
 import { CatalogFilters } from "./CatalogFilters/CatalogFilters";
 import { CatalogQueryProvider } from "./CatalogQueryContext";
 import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
-import { STATIC_FILTER_OPTIONS } from "./options";
+import { getCatalogFacetsCached } from "./data";
+import { toGameCard } from "./mapper";
 import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";
 
 type CatalogPageProps = { searchParams: Promise<SearchParamsInput> };
 
+/** Preço e promoção mudam a cada acesso: a listagem não vai para o cache. */
+async function CatalogResults({ query }: { query: CatalogQuery }) {
+  await connection();
+  const { items } = await searchCatalog(query);
+
+  if (items.length === 0) {
+    return <p className={styles.empty}>Produto não encontrado</p>;
+  }
+
+  return (
+    <div className={styles.grid}>
+      {items.map((item) => (
+        <GameCard key={item.variantId} {...toGameCard(item)} />
+      ))}
+    </div>
+  );
+}
+
 async function Catalog({ searchParams }: CatalogPageProps) {
-  const query = parseCatalogQuery(await searchParams);
+  const [query, facets] = await Promise.all([
+    searchParams.then(parseCatalogQuery),
+    getCatalogFacetsCached(),
+  ]);
 
   return (
     <CatalogQueryProvider query={query}>
@@ -23,15 +50,12 @@ async function Catalog({ searchParams }: CatalogPageProps) {
       </div>
 
       <div className={styles.layout}>
-        <CatalogFilters options={STATIC_FILTER_OPTIONS} />
+        <CatalogFilters options={facets} />
 
         <div className={styles.gridContainer}>
-          {/* TODO(Parte 2): trocar o mock pelo searchCatalog. */}
-          <div className={styles.grid}>
-            {GAMES.map((game) => (
-              <GameCard key={game.id} {...game} />
-            ))}
-          </div>
+          <Suspense>
+            <CatalogResults query={query} />
+          </Suspense>
         </div>
       </div>
     </CatalogQueryProvider>

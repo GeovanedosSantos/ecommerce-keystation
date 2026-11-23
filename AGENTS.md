@@ -100,6 +100,7 @@ Paleta moderna e vibrante (estilo Cyberpunk/Twitch), excelente para chamar aten�
   - Em Route Handlers: `revalidateTag(productCacheTag(slug), "max")`. `updateTag` só funciona em Server Actions, e chamar `revalidateTag` sem o segundo argumento está depreciado.
   - Se o slug mudar, invalide o antigo e o novo.
   - Publicar uma variant, mudar a galeria ou os requisitos também conta como escrita.
+  - As opções de filtro do catálogo ficam em cache com a tag `CATALOG_FACETS_TAG` (`src/app/(store)/catalog/data.ts`): invalide também ao criar ou alterar produto, gênero, plataforma ou o status de uma variant. A listagem do catálogo não vai para o cache.
 - A invalidação fica na camada do Next (Server Action / Route Handler), **nunca** nos services de `src/core/modules`, que devem continuar independentes do framework.
 
 ---
