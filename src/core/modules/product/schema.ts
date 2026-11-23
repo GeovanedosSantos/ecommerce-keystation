@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Category, ProductStatus } from "@/generated/prisma/enums";
 import { isAllowedRemoteImage, REMOTE_IMAGE_PATTERNS } from "@/utils/remote-images";
-import { slugify } from "./slugify";
+import { slugify } from "@/utils/formatter/slugify";
 
 const quantitySchema = z.strictObject({
     value: z.number().positive(),
