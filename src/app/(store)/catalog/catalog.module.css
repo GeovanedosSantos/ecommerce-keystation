@@ -1,101 +1,51 @@
-.sortWrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  color: var(--text-secondary);
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.sortSelect {
-  background: transparent;
-  border: none;
-  color: var(--text-main);
-  outline: none;
-  font-size: 0.9rem;
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 2rem;
   align-items: flex-start;
 }
 
-.sidebar {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.filterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.filterGroup h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.checkboxLabel input {
-  accent-color: var(--primary);
-}
-
-.priceInputs {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.priceInputs input {
-  width: 100%;
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  padding: 0.5rem;
-  border-radius: 6px;
-  color: var(--text-main);
-  outline: none;
-}
-
-.priceInputs span {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
 .gridContainer {
-  flex: 1;
+  min-width: 0;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: 1.5rem;
 }
 
+/* Mesmo breakpoint da Header e do sidebar. */
 @media (max-width: 768px) {
+  .title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
   }
 }

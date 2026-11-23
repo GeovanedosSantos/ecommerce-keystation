@@ -1,0 +1,142 @@
+.panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle {
+  display: none;
+}
+
+.chevron {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.legend {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  padding: 0;
+  margin-bottom: 0.75rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkbox input {
+  accent-color: var(--primary);
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price input {
+  width: 100%;
+  min-width: 0;
+  font-size: 1rem;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 6px;
+  color: var(--text-main);
+  outline: none;
+}
+
+.price input:focus {
+  border-color: var(--secondary);
+}
+
+.price span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Mesmo breakpoint da Header e do sidebar. */
+@media (max-width: 768px) {
+  .panel {
+    padding: 0;
+    gap: 0;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toggle:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+  }
+
+  .body {
+    padding: 0.5rem 1rem 1.25rem;
+  }
+
+  .bodyClosed {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
