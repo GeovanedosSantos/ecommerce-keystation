@@ -13,8 +13,8 @@
     "format:check": "prettier --check src/core"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.10.0",
-    "@prisma/client": "^7.10.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
     "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.7",
     "jose": "^6.2.15",
@@ -31,18 +31,17 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "prettier": "3.9.10",
-    "prisma": "^7.10.0",
+    "prisma": "7.10.1",
     "tsx": "^4.23.15",
     "typescript": "7.0.2",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^5.1.0"
   },
   "allowScripts": {
-    "prisma@7.10.0": true,
-    "@prisma/engines@7.10.0": true
+    "prisma@7.10.1": true,
+    "@prisma/engines@7.10.1": true
   },
   "overrides": {
-    "mysql2": "^3.24.4",
-    "deepmerge-ts": "^8.0.0"
+    "effect": "^3.22.1"
   }
 }
