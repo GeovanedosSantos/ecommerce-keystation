@@ -4,12 +4,15 @@ import { Search, ChevronLeft } from "lucide-react";
 import styles from "./Header.module.css";
 import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import { HideOnPath } from "./HideOnPath";
 import { Logo } from "./Logo";
 import { OnNavigate } from "./OnNavigate";
 import { SidebarButton } from "./sidebar/Sidebar";
 import { useSidebar } from "./sidebar/SidebarContext";
 
 const SEARCH_ID = "header-search";
+// O catálogo tem a própria busca.
+const SEARCH_PAGE = "/catalog";
 
 export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
   const { isOpen: sidebarOpen, isMobile, triggerRef: sidebarTriggerRef } = useSidebar()
@@ -58,38 +61,42 @@ export function HeaderContent({ userButtons }: { userButtons: ReactNode }) {
         <Logo />
       </div>
 
-      <Form
-        action="/catalog"
-        role="search"
-        id={SEARCH_ID}
-        className={`${styles.searchBar} ${isOpen ? styles.searchBarOpen : ''}`}
-        onKeyDown={handleSearchKeyDown}
-        onSubmit={() => setOpen(false)}
-      >
-        <button type="button" className={styles.searchToggle} aria-label="Voltar"
-          onClick={closeSearch}>
-          <ChevronLeft size={20} />
-        </button>
-        <div className={styles.searchField}>
-          <Search className={styles.searchIcon} size={20}/>
-          <input
-            ref={inputRef}
-            type="search"
-            name="q"
-            placeholder="Buscar jogos, desenvolvedoras..."
-            aria-label="Buscar jogos e desenvolvedoras"
-            autoComplete="off"
-            enterKeyHint="search"
-            className={styles.searchInput}
-          />
-        </div>
-      </Form>
+      <HideOnPath path={SEARCH_PAGE}>
+        <Form
+          action={SEARCH_PAGE}
+          role="search"
+          id={SEARCH_ID}
+          className={`${styles.searchBar} ${isOpen ? styles.searchBarOpen : ''}`}
+          onKeyDown={handleSearchKeyDown}
+          onSubmit={() => setOpen(false)}
+        >
+          <button type="button" className={styles.searchToggle} aria-label="Voltar"
+            onClick={closeSearch}>
+            <ChevronLeft size={20} />
+          </button>
+          <div className={styles.searchField}>
+            <Search className={styles.searchIcon} size={20}/>
+            <input
+              ref={inputRef}
+              type="search"
+              name="q"
+              placeholder="Buscar jogos, desenvolvedoras..."
+              aria-label="Buscar jogos e desenvolvedoras"
+              autoComplete="off"
+              enterKeyHint="search"
+              className={styles.searchInput}
+            />
+          </div>
+        </Form>
+      </HideOnPath>
 
       <div className={styles.wrapperRight} inert={isOpen || covered}>
-        <button ref={openButtonRef} type="button" className={styles.searchButton} aria-label="Abrir Busca"
-          aria-expanded={isOpen} aria-controls={SEARCH_ID} onClick={openSearch}>
-          <Search size={20} />
-        </button>
+        <HideOnPath path={SEARCH_PAGE}>
+          <button ref={openButtonRef} type="button" className={styles.searchButton} aria-label="Abrir Busca"
+            aria-expanded={isOpen} aria-controls={SEARCH_ID} onClick={openSearch}>
+            <Search size={20} />
+          </button>
+        </HideOnPath>
         {userButtons}
       </div>
     </>
