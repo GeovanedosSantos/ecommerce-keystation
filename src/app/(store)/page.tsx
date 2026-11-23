@@ -9,10 +9,10 @@ import { FEATURED_GAMES } from "@/utils/mock/games";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
-  { name: "RPG", count: "jogos", icon: Swords, href: "/catalog?category=rpg" },
-  { name: "Ação", count: "jogos", icon: Flame, href: "/catalog?category=action" },
-  { name: "Mundo Aberto", count: "jogos", icon: Compass, href: "/catalog?category=open-world" },
-  { name: "Indie", count: "jogos", icon: Gamepad2, href: "/catalog?category=indie" },
+  { name: "RPG", count: "jogos", icon: Swords, href: "/catalog?genre=rpg" },
+  { name: "Ação", count: "jogos", icon: Flame, href: "/catalog?genre=acao" },
+  { name: "Mundo Aberto", count: "jogos", icon: Compass, href: "/catalog?genre=mundo-aberto" },
+  { name: "Indie", count: "jogos", icon: Gamepad2, href: "/catalog?genre=indie" },
 ];
 
 export default function Home() {

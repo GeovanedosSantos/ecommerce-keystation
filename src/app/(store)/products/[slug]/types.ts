@@ -27,7 +27,7 @@ export type ProductCategory = "GAME" | "DLC" | "SPECIAL_EDITION";
 export interface PlatformView {
   id: string;
   name: string;
-  /** Usado em `?plataforma=` (ex: "playstation"). */
+  /** Usado em `?platform=` (ex: "playstation"). */
   slug: string;
   hasSystemRequirements: boolean;
 }
