@@ -110,9 +110,12 @@ describe("parseCatalogQuery", () => {
             expect(parseCatalogQuery({ sale }).onSale).toBe(true);
         });
 
-        it.each([undefined, "", "0", "false", "sim"])("sale=%j deixa o filtro desligado", (sale) => {
-            expect(parseCatalogQuery({ sale }).onSale).toBe(false);
-        });
+        it.each([undefined, "", "0", "false", "sim"])(
+            "sale=%j deixa o filtro desligado",
+            (sale) => {
+                expect(parseCatalogQuery({ sale }).onSale).toBe(false);
+            },
+        );
     });
 
     describe("faixa de preço", () => {
