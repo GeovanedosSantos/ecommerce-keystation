@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Category, Prisma, PrismaClient } from "../src/generated/prisma/client";
 import { hashPassword } from "@/core/modules/auth/password";
+import { productSearchFields } from "../src/core/modules/product/search-fields";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
@@ -405,6 +406,7 @@ async function main() {
     const galleryItems = gallery.map((path, position) => ({ path, position }));
     const data = {
       ...fields,
+      ...productSearchFields(fields.title, fields.developer),
       baseProductId: baseProductId ?? null,
       systemRequirements: systemRequirements ?? Prisma.DbNull,
     };
