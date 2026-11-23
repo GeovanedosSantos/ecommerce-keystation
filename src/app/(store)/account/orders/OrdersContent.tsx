@@ -8,14 +8,9 @@ import {
   ScrollText,
   KeyRound,
   LogOut,
-  ChevronDown,
 } from "lucide-react";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
-import {
-  MOCK_ORDERS,
-  type OrderHistoryItem,
-  type OrderStatus,
-} from "@/utils/mock/orders";
+import { MOCK_ORDERS } from "@/utils/mock/orders";
 import styles from "./orders.module.css";
 
 function formatBRL(value: number) {

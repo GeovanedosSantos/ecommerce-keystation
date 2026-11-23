@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { KeyRound, ShieldCheck, HelpCircle } from "lucide-react";
+import { KeyRound, ShieldCheck } from "lucide-react";
 import styles from "./Footer.module.css";
 
 export function Footer() {
