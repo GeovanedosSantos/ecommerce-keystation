@@ -4,7 +4,7 @@ Repositório do projeto da A3 de Usabilidade, desenvolvimento web, mobile e jogo
 
 ## Tecnologias
 
-**Frontend:** Node,js, Next.js, TypeScript, React, Css Modules (BEM) \
+**Frontend:** Node,js, Next.js, TypeScript, React, Css Modules \
 **Backend:** Node.js, Next.js, TypeScript, Prisma (ORM), Zod\
 **Banco de Dados:** PostgreSQL
 
