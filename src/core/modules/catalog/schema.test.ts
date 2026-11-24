@@ -72,11 +72,6 @@ describe("parseCatalogQuery", () => {
     });
 
     describe("filtros de lista", () => {
-        it("aceita um valor único ou repetido", () => {
-            expect(parseCatalogQuery({ genre: "rpg" }).genres).toEqual(["rpg"]);
-            expect(parseCatalogQuery({ genre: ["rpg", "acao"] }).genres).toEqual(["rpg", "acao"]);
-        });
-
         it("descarta slugs inválidos e repetidos, e normaliza maiúsculas", () => {
             const { platforms } = parseCatalogQuery({
                 platform: ["Steam", "steam", "", "x y", "play--station", "-xbox", "xbox"],

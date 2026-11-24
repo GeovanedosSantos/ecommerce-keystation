@@ -135,6 +135,23 @@ describe("imagens do produto", () => {
     });
 });
 
+describe("variants do produto", () => {
+    it("recusa a mesma plataforma repetida", () => {
+        const platformId = crypto.randomUUID();
+        const variant = { platformId, price: 49.9, releaseDate: "2026-01-01" };
+
+        const result = createProductSchema.safeParse({
+            category: "GAME",
+            title: "Hollow Knight",
+            description: "Metroidvania",
+            variants: [variant, { ...variant, price: 59.9 }],
+        });
+
+        expect(result.success).toBe(false);
+        expect(issuePaths(result)).toEqual(["variants.1.platformId"]);
+    });
+});
+
 describe("preço da variant", () => {
     const variant = (price: number) => ({
         platformId: crypto.randomUUID(),

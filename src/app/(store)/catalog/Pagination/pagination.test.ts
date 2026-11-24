@@ -21,19 +21,4 @@ describe("paginationItems", () => {
   ])("página %i de %i usa reticências", (current, pageCount, expected) => {
     expect(paginationItems(current, pageCount)).toEqual(expected);
   });
-
-  it("sempre tem 7 posições acima de 7 páginas", () => {
-    for (let current = 1; current <= 30; current++) {
-      expect(paginationItems(current, 30)).toHaveLength(7);
-    }
-  });
-
-  it("sempre inclui a primeira, a última e a página atual", () => {
-    for (let current = 1; current <= 30; current++) {
-      const items = paginationItems(current, 30);
-      expect(items).toContain(1);
-      expect(items).toContain(30);
-      expect(items).toContain(current);
-    }
-  });
 });

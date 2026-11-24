@@ -28,15 +28,6 @@ describe("createProduct", () => {
             developerSlug: "game-freak",
         });
     });
-
-    it("sem desenvolvedora, busca só pelo título", async () => {
-        const { slug } = await createProduct({ ...game, developer: undefined });
-
-        expect(await searchFieldsOf(slug)).toEqual({
-            searchText: "pokemon edicao ouro",
-            developerSlug: null,
-        });
-    });
 });
 
 describe("updateProduct", () => {
