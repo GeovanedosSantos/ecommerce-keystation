@@ -12,6 +12,7 @@ import type { CatalogSort } from "./schema";
 export type CatalogSqlFilters = {
     /** Já normalizado (`normalizeSearchText`). */
     term?: string;
+    /** O produto precisa ter todos estes gêneros. */
     genreIds?: string[];
     platformIds?: string[];
     categories: Category[];
@@ -71,9 +72,12 @@ function variantConditions(filters: CatalogSqlFilters): Prisma.Sql {
         conditions.push(Prisma.sql`p.developer_slug = ANY(${filters.developerSlugs}::text[])`);
     }
     if (filters.genreIds) {
-        conditions.push(Prisma.sql`EXISTS (
-            SELECT 1 FROM "_product_genre" pg
-            WHERE pg."B" = p.id AND pg."A" = ANY(${filters.genreIds}::uuid[])
+        // Nenhum gênero pedido pode faltar no produto.
+        conditions.push(Prisma.sql`NOT EXISTS (
+            SELECT 1 FROM unnest(${filters.genreIds}::uuid[]) AS wanted(id)
+            WHERE NOT EXISTS (
+                SELECT 1 FROM "_product_genre" pg WHERE pg."A" = wanted.id AND pg."B" = p.id
+            )
         )`);
     }
 

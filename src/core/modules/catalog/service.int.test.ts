@@ -130,10 +130,6 @@ describe("searchCatalog: filtros", () => {
 
     it.each([
         [{ genre: "acao" }, ["Elden Ring (Steam)", "Elden Ring (Xbox)", "Hades (Steam)"]],
-        [
-            { genre: ["acao", "rpg"] },
-            ["Elden Ring (Steam)", "Elden Ring (Xbox)", "Elden Ring DLC (Steam)", "Hades (Steam)"],
-        ],
         [{ platform: "xbox" }, ["Elden Ring (Xbox)", "Forza (Xbox)"]],
         [{ type: "dlc" }, ["Elden Ring DLC (Steam)"]],
         [{ type: ["dlc", "game"], platform: "xbox" }, ["Elden Ring (Xbox)", "Forza (Xbox)"]],
@@ -142,10 +138,30 @@ describe("searchCatalog: filtros", () => {
             ["Elden Ring (Steam)", "Elden Ring DLC (Steam)", "Hades (Steam)"],
         ],
         [{ genre: "acao", platform: "xbox" }, ["Elden Ring (Xbox)"]],
-    ])("OU dentro do filtro e E entre filtros: %j", async (params, expected) => {
+    ])(
+        "plataforma, tipo e desenvolvedora: OU dentro do filtro e E entre filtros: %j",
+        async (params, expected) => {
+            await seedCatalog();
+
+            expect(await sortedTitles(params)).toEqual(expected);
+        },
+    );
+
+    it("com vários gêneros, mostra só os jogos que têm todos eles", async () => {
         await seedCatalog();
 
-        expect(await sortedTitles(params)).toEqual(expected);
+        // Elden Ring é Ação e RPG; a DLC é só RPG e Hades é só Ação.
+        expect(await sortedTitles({ genre: ["acao", "rpg"] })).toEqual([
+            "Elden Ring (Steam)",
+            "Elden Ring (Xbox)",
+        ]);
+    });
+
+    it("gêneros que nenhum jogo tem juntos não devolvem nada", async () => {
+        await seedCatalog();
+        await createGenre("Corrida");
+
+        expect(await search({ genre: ["acao", "corrida"] })).toMatchObject({ items: [], total: 0 });
     });
 
     it.each([{ genre: "inexistente" }, { platform: "nintendo" }, { developer: "ninguem" }])(
