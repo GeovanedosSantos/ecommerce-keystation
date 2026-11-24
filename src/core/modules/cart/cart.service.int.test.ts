@@ -33,6 +33,66 @@ async function seedVariants() {
     return { steamId, xboxId };
 }
 
+const cartItemCount = () => prisma.shoppingCartItem.count();
+
+describe("addToCart", () => {
+    it("adiciona uma variant publicada com chave disponível", async () => {
+        const user = await createUser();
+        const { steamId } = await seedVariants();
+
+        expect(await addToCart(user.id, steamId)).toEqual({ ok: true });
+        expect(await getCartVariantIds(user.id)).toEqual([steamId]);
+    });
+
+    it("recusa uma variant esgotada e não grava nada", async () => {
+        const user = await createUser();
+        const steam = await createPlatform("Steam");
+        const game = await createGame({
+            title: "Sem Chave",
+            variants: [{ platformId: steam.id, price: 50 }],
+        });
+
+        const result = await addToCart(user.id, game.variantId(steam.id));
+
+        expect(result).toEqual({ ok: false, error: "OUT_OF_STOCK" });
+        expect(await cartItemCount()).toBe(0);
+    });
+
+    it("recusa uma variant cujas chaves já foram vendidas", async () => {
+        const user = await createUser();
+        const { steamId } = await seedVariants();
+        await prisma.key.updateMany({ where: { variantId: steamId }, data: { status: "SOLD" } });
+
+        expect(await addToCart(user.id, steamId)).toEqual({ ok: false, error: "OUT_OF_STOCK" });
+        expect(await cartItemCount()).toBe(0);
+    });
+
+    it("recusa uma variant despublicada", async () => {
+        const user = await createUser();
+        const { steamId } = await seedVariants();
+        await prisma.productVariant.update({
+            where: { id: steamId },
+            data: { status: "DISABLED" },
+        });
+
+        expect(await addToCart(user.id, steamId)).toEqual({
+            ok: false,
+            error: "PRODUCT_UNAVAILABLE",
+        });
+        expect(await cartItemCount()).toBe(0);
+    });
+
+    it("recusa uma variant que não existe", async () => {
+        const user = await createUser();
+
+        expect(await addToCart(user.id, randomUUID())).toEqual({
+            ok: false,
+            error: "PRODUCT_UNAVAILABLE",
+        });
+        expect(await cartItemCount()).toBe(0);
+    });
+});
+
 describe("getCartVariantIds", () => {
     it("sem carrinho, devolve uma lista vazia", async () => {
         const user = await createUser();

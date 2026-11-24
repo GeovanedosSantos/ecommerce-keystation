@@ -30,5 +30,6 @@ export function toGameCard(item: CatalogItem, inCart: boolean): GameCardProps {
     platform: item.platform.name,
     platformSlug: item.platform.slug,
     inCart,
+    inStock: item.inStock,
   };
 }

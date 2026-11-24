@@ -10,12 +10,15 @@ type AddToCartButtonProps = {
     title: string;
     /** O jogo já está no carrinho: o botão vira um atalho para ele. */
     inCart?: boolean;
+    /** Sem estoque: o botão fica desativado (o servidor também recusa). */
+    soldOut?: boolean;
 };
 
 export function AddToCartButton({
     variantId,
     title,
     inCart = false,
+    soldOut = false,
 }: AddToCartButtonProps) {
     // Marca na hora do clique; a action revalida a página e o `inCart` vindo do servidor confirma.
     const [optimisticInCart, setOptimisticInCart] = useOptimistic(inCart);
@@ -26,6 +29,14 @@ export function AddToCartButton({
         return (
             <Button href="/cart" size="icon" variant="success" aria-label={`${title} já está no carrinho. Ver carrinho`}>
                 <Check size={18} aria-hidden="true" />
+            </Button>
+        );
+    }
+
+    if (soldOut) {
+        return (
+            <Button size="icon" variant="primary" aria-label={`${title} está esgotado`} disabled>
+                <ShoppingCart size={18} aria-hidden="true" />
             </Button>
         );
     }

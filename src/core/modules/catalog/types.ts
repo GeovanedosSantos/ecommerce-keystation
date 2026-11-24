@@ -18,7 +18,7 @@ export type CatalogItem = {
     /** Preço com a maior promoção ativa; `null` sem promoção. */
     promotionalPriceCents: number | null;
     discountPercent: number | null;
-    /** Tem ao menos uma chave disponível. Ainda não aparece no card. */
+    /** Tem ao menos uma chave disponível; sem ela o card mostra "Esgotado". */
     inStock: boolean;
 };
 

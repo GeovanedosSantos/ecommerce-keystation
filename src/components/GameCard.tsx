@@ -20,6 +20,8 @@ interface GameCardProps {
   platformSlug?: string;
   /** A variant já está no carrinho do usuário logado. */
   inCart?: boolean;
+  /** Sem chave disponível: mostra "Esgotado" e desativa o carrinho. */
+  inStock?: boolean;
 }
 
 export function GameCard({
@@ -34,6 +36,7 @@ export function GameCard({
   platform,
   platformSlug,
   inCart,
+  inStock = true,
 }: GameCardProps) {
   const hasPromo = promotionalPrice && promotionalPrice < price;
   const discount = hasPromo
@@ -45,6 +48,7 @@ export function GameCard({
     <div className={styles.card}>
       <CoverImage src={coverImage} alt={title} href={href}>
         {hasPromo && <CoverBadge tone="primary">-{discount}%</CoverBadge>}
+        {!inStock && <CoverBadge position="top-right">Esgotado</CoverBadge>}
         <CoverBadge position="bottom-left">{platform}</CoverBadge>
       </CoverImage>
 
@@ -57,7 +61,7 @@ export function GameCard({
         <div className={styles.footer}>
           <Price value={hasPromo ? promotionalPrice : price} originalValue={hasPromo ? price : null} />
 
-          <AddToCartButton variantId={variantId} title={title} inCart={inCart} />
+          <AddToCartButton variantId={variantId} title={title} inCart={inCart} soldOut={!inStock} />
         </div>
       </div>
     </div>

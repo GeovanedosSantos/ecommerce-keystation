@@ -36,6 +36,7 @@ export function OtherEditions({ editions, platformId }: OtherEditionsProps) {
                 discountPercent={variant.discountPercent}
                 developer={edition.developer ?? ""}
                 platform={variant.platform.name}
+                inStock={variant.inStock}
               />
             </li>
           );

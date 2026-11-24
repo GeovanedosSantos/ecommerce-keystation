@@ -8,6 +8,7 @@ import {
     applyCoupon,
     removeCoupon,
     removeFromCart,
+    type AddToCartError,
     type CouponError,
 } from "@/core/modules/cart/cart.service";
 import { getSession } from "@/infra/session-cookie";
@@ -26,6 +27,11 @@ const couponCodeSchema = z
     .trim()
     .min(1, "Informe o código do cupom.")
     .max(50, "Código muito longo.");
+
+const ADD_TO_CART_MESSAGES: Record<AddToCartError, string> = {
+    PRODUCT_UNAVAILABLE: "Esta edição não está disponível.",
+    OUT_OF_STOCK: "Este jogo está esgotado.",
+};
 
 const COUPON_MESSAGES: Record<CouponError, string> = {
     NOT_FOUND: "Cupom não encontrado.",
@@ -57,7 +63,7 @@ export async function addToCartAction(variantId: string): Promise<CartActionResu
 
     const result = await addToCart(userId, parsed.data);
     if (!result.ok) {
-        return { ok: false, message: "Esta edição não está disponível." };
+        return { ok: false, message: ADD_TO_CART_MESSAGES[result.error] };
     }
 
     refreshCartViews();
