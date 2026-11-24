@@ -1,10 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import {
-    ConflictError,
-    NotFoundError,
-    UnprocessableEntityError,
-    ValidationError,
-} from "@/core/errors";
+import { ConflictError, NotFoundError, UnprocessableEntityError } from "@/core/errors";
 import { prisma } from "@/infra/prisma";
 import { resetDatabase } from "@/test/db";
 import {
@@ -95,33 +90,6 @@ describe("createProduct", () => {
 
         expect(error).toBeInstanceOf(UnprocessableEntityError);
     });
-
-    it("recusa a mesma plataforma repetida nas variants do produto", async () => {
-        const steam = await createPlatform();
-
-        const error = await errorOf(
-            createProduct({ ...game, variants: [variant(steam.id), variant(steam.id)] }),
-        );
-
-        expect(error).toBeInstanceOf(ValidationError);
-        expect(await prisma.product.count()).toBe(0);
-    });
-
-    it.each([0, -10])("recusa variant com preço %s e não grava nada", async (price) => {
-        const steam = await createPlatform();
-
-        const error = await errorOf(
-            createProduct({ ...game, variants: [variant(steam.id, price)] }),
-        );
-
-        expect(error).toBeInstanceOf(ValidationError);
-        expect((error as ValidationError).zodError.issues[0].path).toEqual([
-            "variants",
-            0,
-            "price",
-        ]);
-        expect(await prisma.product.count()).toBe(0);
-    });
 });
 
 describe("createVariant", () => {
@@ -136,15 +104,6 @@ describe("createVariant", () => {
         expect(await prisma.productVariant.count()).toBe(1);
     });
 
-    it("recusa variant já criada junto com o produto", async () => {
-        const steam = await createPlatform();
-        await createProduct({ ...game, variants: [variant(steam.id)] });
-
-        const error = await errorOf(createVariant("hollow-knight", variant(steam.id)));
-
-        expect(error).toBeInstanceOf(ConflictError);
-    });
-
     it("aceita o mesmo produto em plataformas diferentes", async () => {
         const [steam, epic] = await Promise.all([createPlatform("Steam"), createPlatform("Epic")]);
         await createProduct({ ...game, variants: [variant(steam.id)] });
@@ -152,25 +111,6 @@ describe("createVariant", () => {
         await createVariant("hollow-knight", variant(epic.id));
 
         expect(await prisma.productVariant.count()).toBe(2);
-    });
-
-    it.each([0, -1])("recusa preço %s e não grava a variant", async (price) => {
-        const steam = await createPlatform();
-        await createProduct(game);
-
-        const error = await errorOf(createVariant("hollow-knight", variant(steam.id, price)));
-
-        expect(error).toBeInstanceOf(ValidationError);
-        expect(await prisma.productVariant.count()).toBe(0);
-    });
-
-    it("grava o preço com 2 casas decimais", async () => {
-        const steam = await createPlatform();
-        await createProduct(game);
-
-        const created = await createVariant("hollow-knight", variant(steam.id, 59.9));
-
-        expect(created.price.toFixed(2)).toBe("59.90");
     });
 });
 

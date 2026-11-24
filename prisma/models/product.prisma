@@ -25,6 +25,10 @@ model Product {
   coverPath        String?  @map("cover_path") @db.VarChar(255)
   trailerYoutubeId String?  @map("trailer_youtube_id") @db.VarChar(11)
 
+  // Mantidos pelo service: título + desenvolvedora sem acentos (busca) e slug da desenvolvedora (filtro).
+  searchText    String  @map("search_text")
+  developerSlug String? @map("developer_slug") @db.VarChar(150)
+
   baseProductId String?   @map("base_product_id") @db.Uuid
   baseProduct   Product?  @relation("ProductAddons", fields: [baseProductId], references: [id], onDelete: Restrict)
   addons        Product[] @relation("ProductAddons")
@@ -38,6 +42,8 @@ model Product {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([baseProductId])
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([developerSlug])
   @@map("product")
 }
 
@@ -98,6 +104,7 @@ model ProductVariant {
   promotions PromotionProduct[]
 
   @@unique([productId, platformId])
+  @@index([platformId, status])
   @@map("product_variant")
 }
 

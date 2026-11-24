@@ -33,7 +33,8 @@ export type CouponError =
     | "MAX_USES_PER_USER";
 
 export type CouponResult = { ok: true } | { ok: false; error: CouponError };
-export type AddToCartResult = { ok: true } | { ok: false; error: "PRODUCT_UNAVAILABLE" };
+export type AddToCartError = "PRODUCT_UNAVAILABLE" | "OUT_OF_STOCK";
+export type AddToCartResult = { ok: true } | { ok: false; error: AddToCartError };
 
 type CouponRules = {
     isActive: boolean;
@@ -132,9 +133,11 @@ export async function getCart(userId: string): Promise<CartView> {
 export async function addToCart(userId: string, variantId: string): Promise<AddToCartResult> {
     const variant = await prisma.productVariant.findFirst({
         where: { id: variantId, status: "PUBLISHED" },
-        select: { id: true },
+        select: { keys: { where: { status: "AVAILABLE" }, take: 1, select: { id: true } } },
     });
     if (!variant) return { ok: false, error: "PRODUCT_UNAVAILABLE" };
+    // Sem chave disponível não há o que vender. O botão some no card, mas a action pode ser chamada direto.
+    if (variant.keys.length === 0) return { ok: false, error: "OUT_OF_STOCK" };
 
     const cart = await prisma.shoppingCart.upsert({
         where: { userId },
@@ -204,6 +207,15 @@ export async function removeCoupon(userId: string): Promise<void> {
         where: { userId },
         data: { couponId: null },
     });
+}
+
+/** Variants no carrinho do usuário. Cada uma entra uma vez só (chave carrinho + variant). */
+export async function getCartVariantIds(userId: string): Promise<string[]> {
+    const items = await prisma.shoppingCartItem.findMany({
+        where: { cart: { userId } },
+        select: { variantId: true },
+    });
+    return items.map(({ variantId }) => variantId);
 }
 
 export async function getCartItemCount(userId: string): Promise<number> {

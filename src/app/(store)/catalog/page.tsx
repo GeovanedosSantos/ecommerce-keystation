@@ -1,68 +1,104 @@
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { GameCard } from "@/components/GameCard";
-import { Filter, SlidersHorizontal } from "lucide-react";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
-import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
-import { GAMES } from "@/utils/mock/games";
+import {
+  parseCatalogQuery,
+  type CatalogQuery,
+  type SearchParamsInput,
+} from "@/core/modules/catalog/schema";
+import { searchCatalog } from "@/core/modules/catalog/service";
+import { getCartVariantIds } from "@/core/modules/cart/cart.service";
+import { getSession } from "@/infra/session-cookie";
+import { CatalogFilters } from "./CatalogFilters/CatalogFilters";
+import { CatalogQueryProvider } from "./CatalogQueryContext";
+import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
+import { getCatalogFacetsCached } from "./data";
+import { toGameCard, toResultsLabel } from "./mapper";
+import { Pagination } from "./Pagination/Pagination";
+import { catalogHref } from "./url";
+import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";
 
-export default function CatalogPage() {
+type CatalogPageProps = { searchParams: Promise<SearchParamsInput> };
+
+/** Visitante sem login não tem carrinho. */
+async function getCartVariantIdsOfSession(): Promise<Set<string>> {
+  const session = await getSession();
+  return new Set(session ? await getCartVariantIds(session.userId) : []);
+}
+
+/** Preço, promoção e carrinho mudam a cada acesso: a listagem não vai para o cache. */
+async function CatalogResults({ query }: { query: CatalogQuery }) {
+  await connection();
+  const [result, cartVariantIds] = await Promise.all([
+    searchCatalog(query),
+    getCartVariantIdsOfSession(),
+  ]);
+
+  // Link antigo ou ?page= editado à mão: leva para a última página que existe.
+  if (result.page > result.pageCount && result.pageCount > 0) {
+    redirect(catalogHref(query, { page: result.pageCount }));
+  }
+
+  if (result.items.length === 0) {
+    return (
+      <p className={styles.empty} role="status">
+        Produto não encontrado
+      </p>
+    );
+  }
+
   return (
-    <PageContainer paddingY="md">
-      <SectionHeader title="Catálogo de Jogos" level="page">
-        <div className={styles.sortWrapper}>
-          <SlidersHorizontal size={18} />
-          <select className={styles.sortSelect} defaultValue="relevance">
-            <option value="relevance">Mais Relevantes</option>
-            <option value="price-asc">Menor Preço</option>
-            <option value="price-desc">Maior Preço</option>
-            <option value="newest">Lançamentos</option>
-          </select>
-        </div>
-      </SectionHeader>
+    <>
+      {/* role="status": o leitor de tela anuncia o novo total quando os filtros mudam. */}
+      <p className={styles.count} role="status">
+        {toResultsLabel(result)}
+      </p>
+      <div className={styles.grid}>
+        {result.items.map((item) => (
+          <GameCard key={item.variantId} {...toGameCard(item, cartVariantIds.has(item.variantId))} />
+        ))}
+      </div>
+      <Pagination query={query} page={result.page} pageCount={result.pageCount} />
+    </>
+  );
+}
+
+async function Catalog({ searchParams }: CatalogPageProps) {
+  const [query, facets] = await Promise.all([
+    searchParams.then(parseCatalogQuery),
+    getCatalogFacetsCached(),
+  ]);
+
+  return (
+    <CatalogQueryProvider query={query}>
+      <div className={styles.toolbar}>
+        <CatalogSearch />
+        <SortSelect />
+      </div>
 
       <div className={styles.layout}>
-        {/* Filters Sidebar */}
-        <aside className={styles.sidebar}>
-          <div className={styles.filterGroup}>
-            <h3>
-              <Filter size={16} /> Gênero
-            </h3>
-            <label className={styles.checkboxLabel}>
-              <input type="checkbox" /> Ação
-            </label>
-            <label className={styles.checkboxLabel}>
-              <input type="checkbox" /> RPG
-            </label>
-            <label className={styles.checkboxLabel}>
-              <input type="checkbox" /> Mundo Aberto
-            </label>
-            <label className={styles.checkboxLabel}>
-              <input type="checkbox" /> Soulslike
-            </label>
-            <label className={styles.checkboxLabel}>
-              <input type="checkbox" /> Corrida
-            </label>
-          </div>
+        <CatalogFilters options={facets} />
 
-          <div className={styles.filterGroup}>
-            <h3>Faixa de Preço</h3>
-            <div className={styles.priceInputs}>
-              <input type="number" placeholder="Min" defaultValue={0} />
-              <span>até</span>
-              <input type="number" placeholder="Max" defaultValue={300} />
-            </div>
-          </div>
-        </aside>
-
-        {/* Game Grid */}
         <div className={styles.gridContainer}>
-          <div className={styles.grid}>
-            {GAMES.map((game) => (
-              <GameCard key={game.id} {...game} />
-            ))}
-          </div>
+          <Suspense>
+            <CatalogResults query={query} />
+          </Suspense>
         </div>
       </div>
+    </CatalogQueryProvider>
+  );
+}
+
+export default function CatalogPage({ searchParams }: CatalogPageProps) {
+  return (
+    <PageContainer paddingY="md">
+      <h1 className={styles.title}>Catálogo</h1>
+      <Suspense>
+        <Catalog searchParams={searchParams} />
+      </Suspense>
     </PageContainer>
   );
 }

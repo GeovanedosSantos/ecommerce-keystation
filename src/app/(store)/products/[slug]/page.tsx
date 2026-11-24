@@ -5,7 +5,10 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
+import { DEFAULT_CATALOG_QUERY } from "@/core/modules/catalog/schema";
 import { getVariantsAvailability } from "@/core/modules/product/service";
+import { slugify } from "@/utils/formatter/slugify";
+import { catalogHref } from "@/app/(store)/catalog/url";
 import { ProductGallery } from "./ProductGallery/ProductGallery";
 import { OtherEditions } from "./OtherEditions/OtherEditions";
 import { SystemRequirements } from "./SystemRequirements/SystemRequirements";
@@ -46,7 +49,7 @@ export default async function ProductDetailPage({
 
   const product = await loadProduct(slug);
 
-  const variant = selectVariant(product.variants, query.plataforma);
+  const variant = selectVariant(product.variants, query.platform);
   const promo = variant.promotionalPrice;
   const discount = variant.discountPercent;
   const hasPromo = promo !== null && discount !== null && promo < variant.price;
@@ -70,7 +73,9 @@ export default async function ProductDetailPage({
           </li>
           {mainGenre && (
             <li>
-              <Link href="/catalog">{mainGenre.name}</Link>
+              <Link href={catalogHref(DEFAULT_CATALOG_QUERY, { genres: [slugify(mainGenre.name)] })}>
+                {mainGenre.name}
+              </Link>
             </li>
           )}
           <li aria-current="page">{product.title}</li>
@@ -117,7 +122,7 @@ export default async function ProductDetailPage({
                     return (
                       <li key={id}>
                         <Link
-                          href={`?plataforma=${platform.slug}`}
+                          href={`?platform=${platform.slug}`}
                           scroll={false}
                           replace
                           aria-current={active ? "true" : undefined}

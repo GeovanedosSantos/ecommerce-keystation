@@ -1,6 +1,6 @@
 import { applyPercentDiscount, toCents } from "@/core/modules/cart/pricing";
 import { systemRequirementsSchema } from "@/core/modules/product/schema";
-import { slugify } from "@/core/modules/product/slugify";
+import { slugify } from "@/utils/formatter/slugify";
 import type {
   ProductEdition,
   PublishedProduct,

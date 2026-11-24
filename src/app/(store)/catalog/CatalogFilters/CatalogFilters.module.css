@@ -1,0 +1,181 @@
+.panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle {
+  display: none;
+}
+
+.clear {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.clear:hover {
+  text-decoration: underline;
+}
+
+.clear:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.chevron {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.legend {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  padding: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* Como <label> (não <legend>), o título já entra no espaçamento do grupo. */
+label.legend {
+  margin-bottom: 0;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkbox input {
+  accent-color: var(--primary);
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Manter 1rem: abaixo de 16px o iOS dá zoom ao focar o campo. */
+.select {
+  width: 100%;
+  height: 3rem;
+  appearance: none;
+  padding: 0 2.75rem 0 0.875rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.select option {
+  background-color: var(--bg-surface);
+}
+
+.selectChevron {
+  position: absolute;
+  right: 0.875rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Mesmo breakpoint da Header e do sidebar. */
+@media (max-width: 768px) {
+  .panel {
+    padding: 0;
+    gap: 0;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .header {
+    padding-right: 1rem;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-height: 3rem;
+    padding: 0 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toggle:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+  }
+
+  .body {
+    padding: 0.5rem 1rem 1.25rem;
+  }
+
+  .bodyClosed {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

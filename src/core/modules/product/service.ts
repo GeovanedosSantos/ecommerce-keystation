@@ -14,6 +14,7 @@ import {
     updateVariantSchema,
     variantSchema,
 } from "./schema";
+import { productSearchFields } from "./search-fields";
 import {
     editionSelect,
     productWithVariantsInclude,
@@ -50,6 +51,7 @@ export async function createProduct(payload: unknown): Promise<ProductWithVarian
     return prisma.product.create({
         data: {
             ...fields,
+            ...productSearchFields(fields.title, fields.developer),
             systemRequirements: systemRequirements ?? undefined,
             variants: {
                 create: variants.map((variant) => ({
@@ -156,6 +158,8 @@ async function variantIdsInStock(variantIds: string[]): Promise<Set<string>> {
 const currentProductSelect = {
     id: true,
     slug: true,
+    title: true,
+    developer: true,
     category: true,
     baseProductId: true,
     _count: { select: { addons: true } },
@@ -178,11 +182,17 @@ export async function updateProduct(slug: string, payload: unknown): Promise<Pro
     await validateUpdate(current, data);
 
     const { systemRequirements, genreIds, gallery, ...fields } = data;
+    const searchChanged = fields.title !== undefined || fields.developer !== undefined;
 
     return prisma.product.update({
         where: { id: current.id },
         data: {
             ...fields,
+            ...(searchChanged &&
+                productSearchFields(
+                    fields.title ?? current.title,
+                    fields.developer === undefined ? current.developer : fields.developer,
+                )),
             systemRequirements: systemRequirements === null ? Prisma.DbNull : systemRequirements,
             genres: genreIds && { set: genreIds.map((id) => ({ id })) },
             gallery: gallery && { deleteMany: {}, create: gallery },
