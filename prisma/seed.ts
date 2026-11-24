@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Category, Prisma, PrismaClient } from "../src/generated/prisma/client";
+import { hashPassword } from "@/core/modules/auth/password";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
@@ -335,6 +336,24 @@ const TICKET_CATEGORIES = [
 ];
 
 async function main() {
+  const adminEmail = process.env["ADMIN_EMAIL"]?.trim().toLowerCase();
+  const adminPassword = (process.env["ADMIN_PASSWORD"]);
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error("Defina ADMIN_EMAIL e ADMIN_PASSWORD no .env para criar o admin");
+  }
+  await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: { role: "ADMIN" },
+      create: {
+        firstName: "Admin",
+        lastName: "Teste",
+        email: adminEmail,
+        passwordHash: await hashPassword(adminPassword),
+        role: "ADMIN",
+      },
+  });
+
   for (const name of GENRES) {
     await prisma.genre.upsert({ where: { name }, update: {}, create: { name } });
   }
@@ -466,7 +485,6 @@ async function main() {
   ]);
   console.log({ products, variants, keys, coupons, ticketCategories });
 }
-
 main()
   .catch((error) => {
     console.error(error);
