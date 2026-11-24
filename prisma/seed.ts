@@ -335,12 +335,13 @@ const TICKET_CATEGORIES = [
   "Outro assunto",
 ];
 
-async function main() {
+async function createAdmin() {
   const adminEmail = process.env["ADMIN_EMAIL"]?.trim().toLowerCase();
   const adminPassword = (process.env["ADMIN_PASSWORD"]);
 
   if (!adminEmail || !adminPassword) {
-    throw new Error("Defina ADMIN_EMAIL e ADMIN_PASSWORD no .env para criar o admin");
+    console.warn("ADMIN_EMAIL ou ADMIN_PASSWORD no .env estão vazios");
+    return;
   }
   await prisma.user.upsert({
       where: { email: adminEmail },
@@ -353,6 +354,11 @@ async function main() {
         role: "ADMIN",
       },
   });
+}
+
+async function main() {
+
+  await createAdmin()
 
   for (const name of GENRES) {
     await prisma.genre.upsert({ where: { name }, update: {}, create: { name } });
