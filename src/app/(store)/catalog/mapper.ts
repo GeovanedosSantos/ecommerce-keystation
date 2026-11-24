@@ -25,6 +25,7 @@ export function toGameCard(item: CatalogItem): GameCardProps {
     coverImage: item.coverPath ?? "",
     price: item.priceCents / 100,
     promotionalPrice: item.promotionalPriceCents === null ? null : item.promotionalPriceCents / 100,
+    discountPercent: item.discountPercent,
     developer: item.developer ?? "",
     platform: item.platform.name,
     platformSlug: item.platform.slug,

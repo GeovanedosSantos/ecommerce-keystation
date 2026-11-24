@@ -33,6 +33,7 @@ export function OtherEditions({ editions, platformId }: OtherEditionsProps) {
                 coverImage={edition.coverPath ?? ""}
                 price={variant.price}
                 promotionalPrice={variant.promotionalPrice}
+                discountPercent={variant.discountPercent}
                 developer={edition.developer ?? ""}
                 platform={variant.platform.name}
               />

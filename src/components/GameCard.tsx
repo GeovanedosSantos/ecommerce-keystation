@@ -12,6 +12,8 @@ interface GameCardProps {
   coverImage: string;
   price: number;
   promotionalPrice?: number | null;
+  /** Percentual da promoção. Sem ele (dados mock), é calculado a partir dos preços. */
+  discountPercent?: number | null;
   developer: string;
   platform: string;
   /** Abre a página do produto já nesta plataforma (`?platform=`). */
@@ -25,12 +27,15 @@ export function GameCard({
   coverImage,
   price,
   promotionalPrice,
+  discountPercent,
   developer,
   platform,
   platformSlug,
 }: GameCardProps) {
   const hasPromo = promotionalPrice && promotionalPrice < price;
-  const discount = hasPromo ? Math.round(((price - promotionalPrice) / price) * 100) : 0;
+  const discount = hasPromo
+    ? (discountPercent ?? Math.round(((price - promotionalPrice) / price) * 100))
+    : 0;
   const href = platformSlug ? `/products/${slug}?platform=${platformSlug}` : `/products/${slug}`;
 
   return (
