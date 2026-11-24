@@ -2,7 +2,7 @@
 import { createContext, use, useCallback, useOptimistic, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { CatalogQuery } from "@/core/modules/catalog/schema";
-import { catalogHref } from "./url";
+import { catalogUrl, withChanges } from "./url";
 
 type CatalogQueryContextValue = {
   /** Já inclui a mudança que está carregando. */
@@ -21,10 +21,10 @@ export function CatalogQueryProvider({ query, children }: { query: CatalogQuery;
 
   const update = useCallback(
     (changes: Partial<CatalogQuery>) => {
-      const next = { ...optimisticQuery, page: 1, ...changes };
+      const next = withChanges(optimisticQuery, changes);
       startTransition(() => {
         setOptimisticQuery(next);
-        router.push(catalogHref(next), { scroll: false });
+        router.push(catalogUrl(next), { scroll: false });
       });
     },
     [optimisticQuery, router, setOptimisticQuery],

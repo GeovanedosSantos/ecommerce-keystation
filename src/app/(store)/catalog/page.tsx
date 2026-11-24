@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { GameCard } from "@/components/GameCard";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
@@ -14,6 +15,7 @@ import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
 import { getCatalogFacetsCached } from "./data";
 import { toGameCard, toResultsLabel } from "./mapper";
 import { Pagination } from "./Pagination/Pagination";
+import { catalogHref } from "./url";
 import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";
 
@@ -23,6 +25,11 @@ type CatalogPageProps = { searchParams: Promise<SearchParamsInput> };
 async function CatalogResults({ query }: { query: CatalogQuery }) {
   await connection();
   const result = await searchCatalog(query);
+
+  // Link antigo ou ?page= editado à mão: leva para a última página que existe.
+  if (result.page > result.pageCount && result.pageCount > 0) {
+    redirect(catalogHref(query, { page: result.pageCount }));
+  }
 
   if (result.items.length === 0) {
     return (
