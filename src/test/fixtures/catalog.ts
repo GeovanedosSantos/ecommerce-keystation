@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { OrderStatus } from "@/generated/prisma/enums";
+import type { OrderItemStatus, OrderStatus } from "@/generated/prisma/enums";
 import { searchCatalog } from "@/core/modules/catalog/service";
 import { parseCatalogQuery, type SearchParamsInput } from "@/core/modules/catalog/schema";
 import { createProduct } from "@/core/modules/product/service";
@@ -86,7 +86,12 @@ export const addKey = (variantId: string) =>
     prisma.key.create({ data: { variantId, keyCode: randomUUID() } });
 
 /** Cria `quantity` pedidos com um item da variant cada. */
-export async function sell(variantId: string, quantity: number, status: OrderStatus = "PAID") {
+export async function sell(
+    variantId: string,
+    quantity: number,
+    status: OrderStatus = "PAID",
+    itemStatus?: OrderItemStatus,
+) {
     const user = await prisma.user.create({
         data: {
             email: `${randomUUID()}@teste.com`,
@@ -104,7 +109,9 @@ export async function sell(variantId: string, quantity: number, status: OrderSta
                 subtotal: 10,
                 total: 10,
                 userId: user.id,
-                items: { create: { variantId, originalPrice: 10, paidPrice: 10 } },
+                items: {
+                    create: { variantId, status: itemStatus, originalPrice: 10, paidPrice: 10 },
+                },
             },
         });
     }

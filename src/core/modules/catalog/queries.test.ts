@@ -34,7 +34,7 @@ describe("catalogPageSql", () => {
                 term: INJECTION,
                 developerSlugs: [INJECTION],
                 categories: [INJECTION as Category],
-                genreIds: [INJECTION],
+                genres: [{ id: INJECTION, slug: INJECTION }],
                 platformIds: [INJECTION],
                 minPriceCents: 100,
                 maxPriceCents: 200,
@@ -64,6 +64,13 @@ describe("catalogPageSql", () => {
         expect(sql.text).toContain("ORDER BY title_prefix DESC, sold DESC, release_date DESC");
     });
 
+    it.each(["price-asc", "price-desc", "newest"] as const)(
+        "sort=%s não consulta os pedidos",
+        (sort) => {
+            expect(catalogPageSql(filters({ sort })).text).not.toContain("order_item");
+        },
+    );
+
     it.each([
         ["price-asc", "ORDER BY effective_cents ASC"],
         ["price-desc", "ORDER BY effective_cents DESC"],
@@ -82,10 +89,10 @@ describe("catalogPageSql", () => {
         expect(text).not.toContain("discount_percent IS NOT NULL");
     });
 
-    it("usa o tipo do enum só como texto de comparação", () => {
+    it("compara a categoria com o enum, sem converter a coluna", () => {
         const { text, values } = catalogPageSql(filters({ categories: [Category.DLC] }));
 
-        expect(text).toMatch(/p\.category::text = ANY\(\$\d+::text\[\]\)/);
+        expect(text).toMatch(/p\.category = ANY\(\$\d+::category\[\]\)/);
         expect(values).toContainEqual([Category.DLC]);
     });
 });

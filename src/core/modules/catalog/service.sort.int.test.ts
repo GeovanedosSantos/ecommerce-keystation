@@ -82,6 +82,23 @@ describe("searchCatalog: ordenação", () => {
         ]);
     });
 
+    it("relevância não conta itens reembolsados de pedidos pagos", async () => {
+        const steam = await createPlatform("Steam");
+        const refunded = await createGame({
+            title: "Reembolsado",
+            variants: [{ platformId: steam.id, price: 99, releaseDate: "2020-01-01" }],
+        });
+        await sell(refunded.variantId(steam.id), 3);
+        await sell(refunded.variantId(steam.id), 5, "PAID", "REFUNDED");
+        const delivered = await createGame({
+            title: "Entregue",
+            variants: [{ platformId: steam.id, price: 99, releaseDate: "2019-01-01" }],
+        });
+        await sell(delivered.variantId(steam.id), 4, "PAID", "DELIVERED");
+
+        expect(await titlesOf()).toEqual(["Entregue", "Reembolsado"]);
+    });
+
     it("empate total é desfeito pelo título", async () => {
         const steam = await createPlatform("Steam");
         for (const title of ["Charlie", "Alpha", "Bravo"]) {
@@ -128,9 +145,14 @@ describe("searchCatalog: paginação", () => {
         expect(new Set(all).size).toBe(totalGames);
     });
 
-    it("página além da última devolve vazio", async () => {
+    it("página além da última volta vazia, mas com o total e o número de páginas", async () => {
         await seedPages();
 
-        expect(await search({ page: "3" })).toMatchObject({ items: [], total: 0, page: 3 });
+        expect(await search({ page: "3" })).toMatchObject({
+            items: [],
+            total: totalGames,
+            page: 3,
+            pageCount: 2,
+        });
     });
 });

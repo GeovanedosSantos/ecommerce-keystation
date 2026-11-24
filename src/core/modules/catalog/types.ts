@@ -1,5 +1,3 @@
-import type { Category } from "@/generated/prisma/enums";
-
 export type FacetOption = { id: string; name: string; slug: string };
 
 export type CatalogFacets = {
@@ -11,24 +9,22 @@ export type CatalogFacets = {
 /** Um card do catálogo: uma variant (produto + plataforma) publicada. */
 export type CatalogItem = {
     variantId: string;
-    productId: string;
     slug: string;
     title: string;
     developer: string | null;
     coverPath: string | null;
-    category: Category;
-    platform: FacetOption;
+    platform: { name: string; slug: string };
     priceCents: number;
     /** Preço com a maior promoção ativa; `null` sem promoção. */
     promotionalPriceCents: number | null;
     discountPercent: number | null;
+    /** Tem ao menos uma chave disponível. Ainda não aparece no card. */
     inStock: boolean;
-    releaseDate: Date;
 };
 
 export type CatalogPage = {
     items: CatalogItem[];
-    /** 0 quando a página pedida passa da última. */
+    /** Total de resultados, mesmo quando a página pedida passa da última e `items` vem vazio. */
     total: number;
     page: number;
     pageSize: number;

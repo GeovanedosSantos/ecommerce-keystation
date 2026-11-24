@@ -157,6 +157,31 @@ describe("searchCatalog: filtros", () => {
         ]);
     });
 
+    it("dois gêneros com o mesmo slug valem como um só", async () => {
+        const steam = await createPlatform("Steam");
+        const [accented, plain, rpg] = await Promise.all([
+            createGenre("Ação"),
+            createGenre("Acao"),
+            createGenre("RPG"),
+        ]);
+        await createGame({
+            title: "Hades",
+            genreIds: [accented.id],
+            variants: [{ platformId: steam.id, price: 50 }],
+        });
+        await createGame({
+            title: "Elden Ring",
+            genreIds: [plain.id, rpg.id],
+            variants: [{ platformId: steam.id, price: 200 }],
+        });
+
+        expect(await titlesOf({ genre: "acao", sort: "price-asc" })).toEqual([
+            "Hades",
+            "Elden Ring",
+        ]);
+        expect(await titlesOf({ genre: ["acao", "rpg"] })).toEqual(["Elden Ring"]);
+    });
+
     it("gêneros que nenhum jogo tem juntos não devolvem nada", async () => {
         await seedCatalog();
         await createGenre("Corrida");

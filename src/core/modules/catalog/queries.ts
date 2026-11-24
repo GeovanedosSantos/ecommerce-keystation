@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
-import { Category, ProductStatus } from "@/generated/prisma/enums";
+import type { Category } from "@/generated/prisma/enums";
+import { ProductStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/infra/prisma";
 import type { CatalogSort } from "./schema";
 
@@ -12,8 +13,11 @@ import type { CatalogSort } from "./schema";
 export type CatalogSqlFilters = {
     /** Já normalizado (`normalizeSearchText`). */
     term?: string;
-    /** O produto precisa ter todos estes gêneros. */
-    genreIds?: string[];
+    /**
+     * Gêneros pedidos, com o slug de cada id. O produto precisa ter ao menos um id de cada slug:
+     * dois gêneros com o mesmo slug ("Ação" e "Acao") valem como um só.
+     */
+    genres?: { id: string; slug: string }[];
     platformIds?: string[];
     categories: Category[];
     developerSlugs: string[];
@@ -28,19 +32,15 @@ export type CatalogSqlFilters = {
 
 const catalogRowSchema = z.object({
     variant_id: z.string(),
-    product_id: z.string(),
     slug: z.string(),
     title: z.string(),
     developer: z.string().nullable(),
     cover_path: z.string().nullable(),
-    category: z.enum(Category),
-    platform_id: z.string(),
     platform_name: z.string(),
     price_cents: z.number().int(),
     effective_cents: z.number().int(),
     discount_percent: z.number().int().nullable(),
     in_stock: z.boolean(),
-    release_date: z.date(),
     total: z.number().int(),
 });
 
@@ -66,19 +66,21 @@ function variantConditions(filters: CatalogSqlFilters): Prisma.Sql {
         conditions.push(Prisma.sql`v.platform_id = ANY(${filters.platformIds}::uuid[])`);
     }
     if (filters.categories.length > 0) {
-        conditions.push(Prisma.sql`p.category::text = ANY(${filters.categories}::text[])`);
+        conditions.push(Prisma.sql`p.category = ANY(${filters.categories}::category[])`);
     }
     if (filters.developerSlugs.length > 0) {
         conditions.push(Prisma.sql`p.developer_slug = ANY(${filters.developerSlugs}::text[])`);
     }
-    if (filters.genreIds) {
-        // Nenhum gênero pedido pode faltar no produto.
-        conditions.push(Prisma.sql`NOT EXISTS (
-            SELECT 1 FROM unnest(${filters.genreIds}::uuid[]) AS wanted(id)
-            WHERE NOT EXISTS (
-                SELECT 1 FROM "_product_genre" pg WHERE pg."A" = wanted.id AND pg."B" = p.id
-            )
-        )`);
+    if (filters.genres) {
+        const ids = filters.genres.map(({ id }) => id);
+        const slugs = filters.genres.map(({ slug }) => slug);
+        // Nenhum slug pedido pode faltar no produto.
+        conditions.push(Prisma.sql`(
+            SELECT COUNT(DISTINCT wanted.slug)
+            FROM unnest(${ids}::uuid[], ${slugs}::text[]) AS wanted(id, slug)
+            JOIN "_product_genre" pg ON pg."A" = wanted.id
+            WHERE pg."B" = p.id
+        ) = ${new Set(slugs).size}`);
     }
 
     return Prisma.join(conditions, " AND ");
@@ -99,15 +101,24 @@ function priceConditions(filters: CatalogSqlFilters): Prisma.Sql {
 }
 
 /**
- * Monta a query da página do catálogo. O preço efetivo usa a maior promoção ativa em `now`,
- * com o mesmo arredondamento de `applyPercentDiscount`.
+ * Variants que passam nos filtros (CTE `listing`, sem os filtros de preço). O preço efetivo usa a
+ * maior promoção ativa em `now`, com o mesmo arredondamento de `applyPercentDiscount`.
  */
-export function catalogPageSql(filters: CatalogSqlFilters): Prisma.Sql {
+function listingSql(filters: CatalogSqlFilters, sort: CatalogSort): Prisma.Sql {
     const titlePrefix = filters.term
         ? Prisma.sql`p.search_text LIKE ${`${escapeLike(filters.term)}%`}`
         : Prisma.sql`FALSE`;
-    // Uma ordenação fora da lista nunca chega ao SQL: cai na relevância.
-    const orderBy = ORDER_BY[filters.sort] ?? ORDER_BY.relevance;
+    // Só a relevância usa as vendas. A contagem fica presa a `v.id`, então só olha os pedidos
+    // das variants que passaram no filtro, e item reembolsado não conta como venda.
+    const sold =
+        sort === "relevance"
+            ? Prisma.sql`(
+                SELECT COUNT(*)::int
+                FROM order_item oi
+                JOIN "order" o ON o.id = oi.order_id
+                WHERE oi.variant_id = v.id AND o.status = 'PAID' AND oi.status <> 'REFUNDED'
+            )`
+            : Prisma.sql`0`;
 
     return Prisma.sql`
         WITH active_promo AS (
@@ -117,45 +128,68 @@ export function catalogPageSql(filters: CatalogSqlFilters): Prisma.Sql {
             WHERE pr.is_active AND pr.starts_at <= ${filters.now} AND pr.ends_at >= ${filters.now}
             GROUP BY pp.variant_id
         ),
-        sales AS (
-            SELECT oi.variant_id, COUNT(*)::int AS sold
-            FROM order_item oi
-            JOIN "order" o ON o.id = oi.order_id
-            WHERE ${filters.sort === "relevance"} AND o.status = 'PAID'
-            GROUP BY oi.variant_id
-        ),
         listing AS (
             SELECT
                 v.id::text AS variant_id,
-                p.id::text AS product_id,
                 p.slug,
                 p.title,
                 p.developer,
                 p.cover_path,
-                p.category::text AS category,
-                pl.id::text AS platform_id,
                 pl.name AS platform_name,
                 ROUND(v.price * 100)::int AS price_cents,
                 ROUND(v.price * (100 - COALESCE(ap.discount_percent, 0)))::int AS effective_cents,
                 ap.discount_percent,
-                EXISTS (
-                    SELECT 1 FROM "key" k WHERE k.variant_id = v.id AND k.status = 'AVAILABLE'
-                ) AS in_stock,
                 v.release_date,
-                COALESCE(s.sold, 0) AS sold,
+                ${sold} AS sold,
                 ${titlePrefix} AS title_prefix
             FROM product_variant v
             JOIN product p ON p.id = v.product_id
             JOIN platform pl ON pl.id = v.platform_id
             LEFT JOIN active_promo ap ON ap.variant_id = v.id
-            LEFT JOIN sales s ON s.variant_id = v.id
             WHERE ${variantConditions(filters)}
         )
-        SELECT *, COUNT(*) OVER()::int AS total
-        FROM listing
-        WHERE ${priceConditions(filters)}
-        ORDER BY ${orderBy}, title ASC, variant_id ASC
-        LIMIT ${filters.limit} OFFSET ${filters.offset}
+    `;
+}
+
+/** Uma ordenação fora da lista nunca chega ao SQL: cai na relevância. */
+const resolveSort = (sort: CatalogSort): CatalogSort =>
+    Object.hasOwn(ORDER_BY, sort) ? sort : "relevance";
+
+/**
+ * A página pedida, com o total de resultados em cada linha. O estoque é consultado depois do
+ * LIMIT, só para as linhas da página: o `COUNT(*) OVER()` monta todas as linhas filtradas, e
+ * dentro de `listing` ele seria calculado para cada uma.
+ */
+export function catalogPageSql(filters: CatalogSqlFilters): Prisma.Sql {
+    const sort = resolveSort(filters.sort);
+    const orderBy = Prisma.sql`ORDER BY ${ORDER_BY[sort]}, title ASC, variant_id ASC`;
+
+    return Prisma.sql`
+        ${listingSql(filters, sort)},
+        page AS (
+            SELECT *, COUNT(*) OVER()::int AS total
+            FROM listing
+            WHERE ${priceConditions(filters)}
+            ${orderBy}
+            LIMIT ${filters.limit} OFFSET ${filters.offset}
+        )
+        SELECT
+            variant_id, slug, title, developer, cover_path, platform_name,
+            price_cents, effective_cents, discount_percent, total,
+            EXISTS (
+                SELECT 1 FROM "key" k
+                WHERE k.variant_id = page.variant_id::uuid AND k.status = 'AVAILABLE'
+            ) AS in_stock
+        FROM page
+        ${orderBy}
+    `;
+}
+
+/** Só o total, para quando a página pedida passa da última e não volta nenhuma linha. */
+export function catalogCountSql(filters: CatalogSqlFilters): Prisma.Sql {
+    return Prisma.sql`
+        ${listingSql(filters, "price-asc")}
+        SELECT COUNT(*)::int AS total FROM listing WHERE ${priceConditions(filters)}
     `;
 }
 
@@ -163,6 +197,11 @@ export function catalogPageSql(filters: CatalogSqlFilters): Prisma.Sql {
 export async function selectCatalogRows(filters: CatalogSqlFilters): Promise<CatalogRow[]> {
     const rows = await prisma.$queryRaw<unknown[]>(catalogPageSql(filters));
     return z.array(catalogRowSchema).parse(rows);
+}
+
+export async function countCatalogRows(filters: CatalogSqlFilters): Promise<number> {
+    const rows = await prisma.$queryRaw<unknown[]>(catalogCountSql(filters));
+    return z.tuple([z.object({ total: z.number().int() })]).parse(rows)[0].total;
 }
 
 const publishedVariant = { status: ProductStatus.PUBLISHED };
@@ -185,10 +224,11 @@ export const selectPublishedPlatforms = () =>
         select: idAndName,
     });
 
+/** Uma linha por slug, agrupada no banco; o nome mostrado é o menor entre os do mesmo slug. */
 export const selectPublishedDevelopers = () =>
-    prisma.product.findMany({
+    prisma.product.groupBy({
+        by: ["developerSlug"],
         where: { variants: { some: publishedVariant }, developerSlug: { not: null } },
-        distinct: ["developerSlug"],
+        _min: { developer: true },
         orderBy: { developerSlug: "asc" },
-        select: { developer: true, developerSlug: true },
     });
