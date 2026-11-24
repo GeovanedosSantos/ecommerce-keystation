@@ -12,7 +12,7 @@ import { CatalogFilters } from "./CatalogFilters/CatalogFilters";
 import { CatalogQueryProvider } from "./CatalogQueryContext";
 import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
 import { getCatalogFacetsCached } from "./data";
-import { toGameCard } from "./mapper";
+import { toGameCard, toResultsLabel } from "./mapper";
 import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";
 
@@ -21,18 +21,28 @@ type CatalogPageProps = { searchParams: Promise<SearchParamsInput> };
 /** Preço e promoção mudam a cada acesso: a listagem não vai para o cache. */
 async function CatalogResults({ query }: { query: CatalogQuery }) {
   await connection();
-  const { items } = await searchCatalog(query);
+  const result = await searchCatalog(query);
 
-  if (items.length === 0) {
-    return <p className={styles.empty}>Produto não encontrado</p>;
+  if (result.items.length === 0) {
+    return (
+      <p className={styles.empty} role="status">
+        Produto não encontrado
+      </p>
+    );
   }
 
   return (
-    <div className={styles.grid}>
-      {items.map((item) => (
-        <GameCard key={item.variantId} {...toGameCard(item)} />
-      ))}
-    </div>
+    <>
+      {/* role="status": o leitor de tela anuncia o novo total quando os filtros mudam. */}
+      <p className={styles.count} role="status">
+        {toResultsLabel(result)}
+      </p>
+      <div className={styles.grid}>
+        {result.items.map((item) => (
+          <GameCard key={item.variantId} {...toGameCard(item)} />
+        ))}
+      </div>
+    </>
   );
 }
 

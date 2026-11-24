@@ -24,6 +24,12 @@
   min-width: 0;
 }
 
+.count {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
 .empty {
   padding: 3rem 1rem;
   text-align: center;
