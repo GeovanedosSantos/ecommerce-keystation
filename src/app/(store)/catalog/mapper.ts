@@ -16,7 +16,7 @@ export function toResultsLabel({ items, total, page, pageSize }: CatalogPage): s
   return `Mostrando ${count.format(first)}–${count.format(last)} de ${count.format(total)} ${noun}`;
 }
 
-export function toGameCard(item: CatalogItem): GameCardProps {
+export function toGameCard(item: CatalogItem, inCart: boolean): GameCardProps {
   return {
     id: item.variantId,
     variantId: item.variantId,
@@ -29,5 +29,6 @@ export function toGameCard(item: CatalogItem): GameCardProps {
     developer: item.developer ?? "",
     platform: item.platform.name,
     platformSlug: item.platform.slug,
+    inCart,
   };
 }

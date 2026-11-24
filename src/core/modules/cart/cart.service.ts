@@ -206,6 +206,15 @@ export async function removeCoupon(userId: string): Promise<void> {
     });
 }
 
+/** Variants no carrinho do usuário. Cada uma entra uma vez só (chave carrinho + variant). */
+export async function getCartVariantIds(userId: string): Promise<string[]> {
+    const items = await prisma.shoppingCartItem.findMany({
+        where: { cart: { userId } },
+        select: { variantId: true },
+    });
+    return items.map(({ variantId }) => variantId);
+}
+
 export async function getCartItemCount(userId: string): Promise<number> {
     return prisma.shoppingCartItem.count({ where: { cart: { userId } } });
 }

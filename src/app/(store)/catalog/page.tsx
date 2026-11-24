@@ -9,6 +9,8 @@ import {
   type SearchParamsInput,
 } from "@/core/modules/catalog/schema";
 import { searchCatalog } from "@/core/modules/catalog/service";
+import { getCartVariantIds } from "@/core/modules/cart/cart.service";
+import { getSession } from "@/infra/session-cookie";
 import { CatalogFilters } from "./CatalogFilters/CatalogFilters";
 import { CatalogQueryProvider } from "./CatalogQueryContext";
 import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
@@ -21,10 +23,19 @@ import styles from "./catalog.module.css";
 
 type CatalogPageProps = { searchParams: Promise<SearchParamsInput> };
 
-/** Preço e promoção mudam a cada acesso: a listagem não vai para o cache. */
+/** Visitante sem login não tem carrinho. */
+async function getCartVariantIdsOfSession(): Promise<Set<string>> {
+  const session = await getSession();
+  return new Set(session ? await getCartVariantIds(session.userId) : []);
+}
+
+/** Preço, promoção e carrinho mudam a cada acesso: a listagem não vai para o cache. */
 async function CatalogResults({ query }: { query: CatalogQuery }) {
   await connection();
-  const result = await searchCatalog(query);
+  const [result, cartVariantIds] = await Promise.all([
+    searchCatalog(query),
+    getCartVariantIdsOfSession(),
+  ]);
 
   // Link antigo ou ?page= editado à mão: leva para a última página que existe.
   if (result.page > result.pageCount && result.pageCount > 0) {
@@ -47,7 +58,7 @@ async function CatalogResults({ query }: { query: CatalogQuery }) {
       </p>
       <div className={styles.grid}>
         {result.items.map((item) => (
-          <GameCard key={item.variantId} {...toGameCard(item)} />
+          <GameCard key={item.variantId} {...toGameCard(item, cartVariantIds.has(item.variantId))} />
         ))}
       </div>
       <Pagination query={query} page={result.page} pageCount={result.pageCount} />

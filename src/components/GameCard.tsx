@@ -18,6 +18,8 @@ interface GameCardProps {
   platform: string;
   /** Abre a página do produto já nesta plataforma (`?platform=`). */
   platformSlug?: string;
+  /** A variant já está no carrinho do usuário logado. */
+  inCart?: boolean;
 }
 
 export function GameCard({
@@ -31,6 +33,7 @@ export function GameCard({
   developer,
   platform,
   platformSlug,
+  inCart,
 }: GameCardProps) {
   const hasPromo = promotionalPrice && promotionalPrice < price;
   const discount = hasPromo
@@ -54,7 +57,7 @@ export function GameCard({
         <div className={styles.footer}>
           <Price value={hasPromo ? promotionalPrice : price} originalValue={hasPromo ? price : null} />
 
-          <AddToCartButton variantId={variantId} title={title} />
+          <AddToCartButton variantId={variantId} title={title} inCart={inCart} />
         </div>
       </div>
     </div>
