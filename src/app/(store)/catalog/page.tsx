@@ -13,6 +13,7 @@ import { CatalogQueryProvider } from "./CatalogQueryContext";
 import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
 import { getCatalogFacetsCached } from "./data";
 import { toGameCard, toResultsLabel } from "./mapper";
+import { Pagination } from "./Pagination/Pagination";
 import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";
 
@@ -42,6 +43,7 @@ async function CatalogResults({ query }: { query: CatalogQuery }) {
           <GameCard key={item.variantId} {...toGameCard(item)} />
         ))}
       </div>
+      <Pagination query={query} page={result.page} pageCount={result.pageCount} />
     </>
   );
 }
