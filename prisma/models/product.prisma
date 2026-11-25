@@ -70,6 +70,7 @@ enum KeyStatus {
   AVAILABLE
   RESERVED
   SOLD
+  REVEALED
 
   @@map("key_status")
 }

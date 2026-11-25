@@ -13,6 +13,7 @@ enum OrderItemStatus {
   PENDING
   DELIVERED
   REFUNDED
+  CANCELED
 
   @@map("order_item_status")
 }
