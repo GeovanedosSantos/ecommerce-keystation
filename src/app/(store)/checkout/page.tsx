@@ -1,101 +1,83 @@
-import { CreditCard, QrCode, FileText, Lock, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/Button/Button";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
+import { CoverImage } from "@/components/ui/CoverImage/CoverImage";
 import { PageContainer } from "@/components/ui/PageContainer/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader/SectionHeader";
+import { getCart } from "@/core/modules/cart/cart.service";
+import { getSession } from "@/infra/session-cookie";
+import { formatBRL } from "./format";
+import ConfirmOrderForm from "./ConfirmOrderForm";
 import styles from "./checkout.module.css";
+
+async function CheckoutContent() {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const cart = await getCart(session.userId);
+  if (cart.items.length === 0) redirect("/cart");
+  const { totals } = cart;
+
+  return (
+    <div className={styles.layout}>
+      <div className={styles.mainContent}>
+        <div className={styles.cardSection}>
+          <h2>Revise seu pedido</h2>
+          <ul className={styles.itemList}>
+            {cart.items.map((item) => (
+              <li key={item.variantId} className={styles.item}>
+                <CoverImage src={item.coverPath} alt={item.title} size="thumb" />
+                <span className={styles.itemTitle}>{item.title}</span>
+                <strong className={styles.itemPrice}>{formatBRL(item.priceCents)}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className={styles.sidebar}>
+        <div className={styles.cardSection}>
+          <h2>Resumo da Compra</h2>
+          <div className={styles.summaryRow}>
+            <span>{cart.items.length} {cart.items.length === 1 ? "jogo" : "jogos"}</span>
+            <span>{formatBRL(totals.subtotalCents)}</span>
+          </div>
+          {totals.discountCents > 0 && (
+            <div className={styles.summaryRow}>
+              <span>Desconto{cart.coupon ? ` (${cart.coupon.code})` : ""}</span>
+              <span className={styles.free}>- {formatBRL(totals.discountCents)}</span>
+            </div>
+          )}
+          <div className={styles.summaryRow}>
+            <span>Taxa de Entrega Digital</span>
+            <span className={styles.free}>Grátis</span>
+          </div>
+          <div className={`${styles.summaryRow} ${styles.totalRow}`}>
+            <span>Total a Pagar</span>
+            <span>{formatBRL(totals.totalCents)}</span>
+          </div>
+
+          <ConfirmOrderForm />
+
+          <div className={styles.securityNote}>
+            <ShieldCheck size={18} className={styles.successIcon} />
+            <span>
+              Ao confirmar, reservamos suas chaves por 15 minutos para você concluir o pagamento.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function CheckoutPage() {
   return (
     <PageContainer>
       <SectionHeader level="page" title="Checkout Seguro" />
-
-      <div className={styles.layout}>
-        {/* Payment Methods */}
-        <div className={styles.mainContent}>
-          <div className={styles.cardSection}>
-            <h2>Selecione o Método de Pagamento</h2>
-            
-            <div className={styles.paymentMethods}>
-              <label className={styles.paymentOption}>
-                <input type="radio" name="payment" defaultChecked />
-                <div className={styles.optionContent}>
-                  <QrCode size={24} className={styles.optionIcon} />
-                  <div>
-                    <strong>Pix (Instantâneo)</strong>
-                    <span>Aprovação imediata e liberação instantânea no cofre</span>
-                  </div>
-                </div>
-              </label>
-
-              <label className={styles.paymentOption}>
-                <input type="radio" name="payment" />
-                <div className={styles.optionContent}>
-                  <CreditCard size={24} className={styles.optionIcon} />
-                  <div>
-                    <strong>Cartão de Crédito</strong>
-                    <span>Parcele em até 12x com segurança</span>
-                  </div>
-                </div>
-              </label>
-
-              <label className={styles.paymentOption}>
-                <input type="radio" name="payment" />
-                <div className={styles.optionContent}>
-                  <FileText size={24} className={styles.optionIcon} />
-                  <div>
-                    <strong>Boleto Bancário</strong>
-                    <span>Compensação em até 1 dia útil</span>
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <div className={styles.cardSection}>
-            <h2>Simulação de Pagamento Pix</h2>
-            <div className={styles.pixBox}>
-              <div className={styles.qrPlaceholder}>
-                <QrCode size={120} color="var(--primary)" />
-              </div>
-              <div className={styles.pixInstructions}>
-                <p>Escaneie o QR Code acima com o aplicativo do seu banco ou copie a chave abaixo:</p>
-                <div className={styles.pixKeyRow}>
-                  <input type="text" readOnly value="00020126580014br.gov.bcb.pix..." />
-                  <Button size="sm">Copiar Chave</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Order Summary & Finalize */}
-        <div className={styles.sidebar}>
-          <div className={styles.summaryBox}>
-            <h2>Resumo da Compra</h2>
-            <div className={styles.summaryRow}>
-              <span>2 jogos</span>
-              <span>R$ 279,89</span>
-            </div>
-            <div className={styles.summaryRow}>
-              <span>Taxa de Entrega Digital</span>
-              <span className={styles.free}>Grátis</span>
-            </div>
-            <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-              <span>Total a Pagar</span>
-              <span>R$ 279,89</span>
-            </div>
-
-            <Button href="/checkout/success" variant="success">
-              <Lock size={16} /> Finalizar Pedido
-            </Button>
-
-            <div className={styles.securityNote}>
-              <ShieldCheck size={18} className={styles.successIcon} />
-              <span>Ambiente 100% seguro com criptografia SSL. Chaves verificadas.</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Suspense fallback={<p>Carregando checkout...</p>}>
+        <CheckoutContent />
+      </Suspense>
     </PageContainer>
   );
 }

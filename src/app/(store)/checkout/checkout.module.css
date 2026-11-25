@@ -1,11 +1,12 @@
 .layout {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: minmax(0, 1fr) 380px;
   gap: 2rem;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .mainContent {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -119,6 +120,7 @@
 }
 
 .pixKeyRow input {
+  min-width: 0;
   flex: 1;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -130,23 +132,7 @@
 
 .sidebar {
   position: sticky;
-  top: 100px;
-}
-
-.summaryBox {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.summaryBox h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-main);
+  min-width: 0;
 }
 
 .summaryRow {
@@ -186,13 +172,103 @@
   flex-shrink: 0;
 }
 
+.itemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-main);
+}
+
+.item > :first-child {
+  flex-shrink: 0;
+}
+
+.itemTitle {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.itemPrice {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.summaryDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.confirmForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paymentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.fieldRow input {
+  min-width: 0;
+  width: 100%;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
 @media (max-width: 768px) {
+  /* Uma coluna só: o resumo vem primeiro, depois o formulário. */
   .layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .sidebar {
+    order: -1;
+  }
+  .cardSection {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+  .paymentOption {
+    padding: 1rem;
+  }
+  .fieldRow {
+    gap: 0.75rem;
   }
   .pixBox {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .pixInstructions {
+    width: 100%;
+  }
+  .qrPlaceholder svg {
+    width: 96px;
+    height: 96px;
   }
 }

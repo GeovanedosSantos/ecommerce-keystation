@@ -1,5 +1,3 @@
-export const MOCK_ORDER_NUMBER = "#12345";
-
 export interface OrderGameItem {
   id: string;
   title: string;
