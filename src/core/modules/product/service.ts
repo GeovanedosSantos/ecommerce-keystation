@@ -500,7 +500,9 @@ export async function getAdminProductBySlug(slug: string): Promise<AdminProductD
         variants: product.variants.map((variant) => {
             const available = variant.keys.filter((k) => k.status === KeyStatus.AVAILABLE).length;
             const reserved = variant.keys.filter((k) => k.status === KeyStatus.RESERVED).length;
-            const sold = variant.keys.filter((k) => k.status === KeyStatus.SOLD).length;
+            const sold = variant.keys.filter(
+                (k) => k.status === KeyStatus.SOLD || k.status === KeyStatus.REVEALED,
+            ).length;
 
             return {
                 id: variant.id,

@@ -19,6 +19,7 @@ async function createSampleVariant() {
       title: "Hades",
       slug: "hades",
       description: "Roguelike",
+      searchText: "hades",
     },
   });
 
@@ -95,5 +96,21 @@ describe("allocateKeysBatch", () => {
     ).rejects.toBeInstanceOf(ValidationError);
 
     expect(await prisma.key.count()).toBe(0);
+  });
+});
+
+describe("getVariantKeyStats", () => {
+  it("conta chaves reveladas como vendidas", async () => {
+    const variant = await createSampleVariant();
+    await prisma.key.createMany({
+      data: [
+        { variantId: variant.id, keyCode: "K-1", status: KeyStatus.AVAILABLE },
+        { variantId: variant.id, keyCode: "K-2", status: KeyStatus.RESERVED },
+        { variantId: variant.id, keyCode: "K-3", status: KeyStatus.SOLD },
+        { variantId: variant.id, keyCode: "K-4", status: KeyStatus.REVEALED },
+      ],
+    });
+
+    expect(await getVariantKeyStats(variant.id)).toEqual({ available: 1, reserved: 1, sold: 2 });
   });
 });
