@@ -1,3 +1,5 @@
+import type { Prisma } from "@/generated/prisma/client";
+import type { OrderStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/infra/prisma";
 import {
     calculateTotals,
@@ -73,10 +75,13 @@ function toCouponDiscount(coupon: {
         : { type: "FIXED_AMOUNT", amountCents: toCents(coupon.discountValue) };
 }
 
-export async function getCart(userId: string): Promise<CartView> {
+export async function getCart(
+    userId: string,
+    db: Prisma.TransactionClient = prisma,
+): Promise<CartView> {
     const now = new Date();
 
-    const cart = await prisma.shoppingCart.findUnique({
+    const cart = await db.shoppingCart.findUnique({
         where: { userId },
         include: {
             coupon: true,
@@ -161,6 +166,29 @@ export async function removeFromCart(userId: string, variantId: string): Promise
     });
 }
 
+/** Pedidos FAILED/CANCELED não consomem o limite de usos do cupom. */
+export async function checkCouponUsage(
+    coupon: { id: string; maxUses: number | null; maxUsesPerUser: number | null },
+    userId: string,
+    db: Prisma.TransactionClient = prisma,
+): Promise<"MAX_USES" | "MAX_USES_PER_USER" | null> {
+    const status = { notIn: ["FAILED", "CANCELED"] satisfies OrderStatus[] };
+
+    if (coupon.maxUses !== null) {
+        const used = await db.order.count({ where: { couponId: coupon.id, status } });
+        if (used >= coupon.maxUses) return "MAX_USES";
+    }
+
+    if (coupon.maxUsesPerUser !== null) {
+        const usedByUser = await db.order.count({
+            where: { couponId: coupon.id, userId, status },
+        });
+        if (usedByUser >= coupon.maxUsesPerUser) return "MAX_USES_PER_USER";
+    }
+
+    return null;
+}
+
 export async function applyCoupon(userId: string, rawCode: string): Promise<CouponResult> {
     const code = rawCode.trim().toUpperCase();
     const coupon = await prisma.coupon.findUnique({ where: { code } });
@@ -172,27 +200,8 @@ export async function applyCoupon(userId: string, rawCode: string): Promise<Coup
     const rulesError = checkCouponRules(coupon, cart.totals.subtotalCents, new Date());
     if (rulesError) return { ok: false, error: rulesError };
 
-    const countedStatuses = { notIn: ["FAILED", "CANCELED"] } as const;
-
-    if (coupon.maxUses !== null) {
-        const used = await prisma.order.count({
-            where: { couponId: coupon.id, status: { notIn: [...countedStatuses.notIn] } },
-        });
-        if (used >= coupon.maxUses) return { ok: false, error: "MAX_USES" };
-    }
-
-    if (coupon.maxUsesPerUser !== null) {
-        const usedByUser = await prisma.order.count({
-            where: {
-                couponId: coupon.id,
-                userId,
-                status: { notIn: [...countedStatuses.notIn] },
-            },
-        });
-        if (usedByUser >= coupon.maxUsesPerUser) {
-            return { ok: false, error: "MAX_USES_PER_USER" };
-        }
-    }
+    const usageError = await checkCouponUsage(coupon, userId);
+    if (usageError) return { ok: false, error: usageError };
 
     await prisma.shoppingCart.update({
         where: { userId },
