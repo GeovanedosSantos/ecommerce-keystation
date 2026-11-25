@@ -20,6 +20,9 @@ import {
     productWithVariantsInclude,
     publishedProductInclude,
     variantWithPlatformInclude,
+    type AdminProductDetail,
+    type AdminProductListItem,
+    type CatalogOptions,
     type ProductEdition,
     type ProductWithVariants,
     type PublishedProduct,
@@ -410,4 +413,122 @@ function assertAllFound(requested: string[], found: { id: string }[], message: s
     if (missing.length > 0) {
         throw new UnprocessableEntityError(`${message}: ${missing.join(", ")}`);
     }
+}
+
+/** Lista produtos para o painel administrativo (inclui variants DISABLED e contagem de chaves). */
+export async function listAdminProducts(search?: string): Promise<AdminProductListItem[]> {
+    const term = search?.trim();
+    const products = await prisma.product.findMany({
+        where: term
+            ? {
+                  OR: [
+                      { title: { contains: term, mode: "insensitive" } },
+                      { developer: { contains: term, mode: "insensitive" } },
+                      { slug: { contains: term, mode: "insensitive" } },
+                  ],
+              }
+            : undefined,
+        orderBy: { createdAt: "desc" },
+        include: {
+            genres: { select: { id: true, name: true }, orderBy: { name: "asc" } },
+            variants: {
+                include: {
+                    platform: { select: { id: true, name: true } },
+                    keys: { select: { status: true } },
+                },
+                orderBy: { platform: { name: "asc" } },
+            },
+        },
+    });
+
+    return products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        slug: product.slug,
+        category: product.category,
+        developer: product.developer,
+        coverPath: product.coverPath,
+        genres: product.genres,
+        variants: product.variants.map((variant) => ({
+            id: variant.id,
+            platformId: variant.platformId,
+            platformName: variant.platform.name,
+            price: Number(variant.price),
+            status: variant.status,
+            releaseDate: variant.releaseDate.toISOString().slice(0, 10),
+            availableKeys: variant.keys.filter((k) => k.status === KeyStatus.AVAILABLE).length,
+            totalKeys: variant.keys.length,
+        })),
+    }));
+}
+
+/** Busca um produto completo para edição no painel administrativo. */
+export async function getAdminProductBySlug(slug: string): Promise<AdminProductDetail> {
+    const product = await prisma.product.findUnique({
+        where: { slug },
+        include: {
+            genres: { select: { id: true, name: true }, orderBy: { name: "asc" } },
+            gallery: { orderBy: { position: "asc" }, select: { path: true, position: true } },
+            variants: {
+                include: {
+                    platform: { select: { id: true, name: true } },
+                    keys: { select: { status: true } },
+                },
+                orderBy: { platform: { name: "asc" } },
+            },
+        },
+    });
+
+    if (!product) {
+        throw productNotFound(slug);
+    }
+
+    return {
+        id: product.id,
+        title: product.title,
+        slug: product.slug,
+        category: product.category,
+        description: product.description,
+        developer: product.developer,
+        publisher: product.publisher,
+        coverPath: product.coverPath,
+        baseProductId: product.baseProductId,
+        genres: product.genres,
+        gallery: product.gallery,
+        variants: product.variants.map((variant) => {
+            const available = variant.keys.filter((k) => k.status === KeyStatus.AVAILABLE).length;
+            const reserved = variant.keys.filter((k) => k.status === KeyStatus.RESERVED).length;
+            const sold = variant.keys.filter((k) => k.status === KeyStatus.SOLD).length;
+
+            return {
+                id: variant.id,
+                platformId: variant.platformId,
+                platformName: variant.platform.name,
+                price: Number(variant.price),
+                status: variant.status,
+                releaseDate: variant.releaseDate.toISOString().slice(0, 10),
+                availableKeys: available,
+                totalKeys: variant.keys.length,
+                keyStats: { available, reserved, sold },
+            };
+        }),
+    };
+}
+
+/** Carrega gêneros, plataformas e jogos base para popular os selects do formulário. */
+export async function listCatalogOptions(): Promise<CatalogOptions> {
+    const [genres, platforms, baseGames] = await Promise.all([
+        prisma.genre.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+        prisma.platform.findMany({
+            select: { id: true, name: true, hasSystemRequirements: true },
+            orderBy: { name: "asc" },
+        }),
+        prisma.product.findMany({
+            where: { category: Category.GAME },
+            select: { id: true, title: true, slug: true },
+            orderBy: { title: "asc" },
+        }),
+    ]);
+
+    return { genres, platforms, baseGames };
 }

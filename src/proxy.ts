@@ -6,15 +6,28 @@ import {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isAdminApi = pathname.startsWith("/api/admin");
+  const isAdminRoute = pathname.startsWith("/admin") || isAdminApi;
+
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = await verifySessionToken(token);
 
   if (!session) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    if (isAdminApi) {
+      return NextResponse.json(
+        { error: "Autenticação necessária" },
+        { status: 401 },
+      );
+    }
+
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (pathname.startsWith("/admin") && session.role !== "ADMIN") {
+  if (isAdminRoute && session.role !== "ADMIN") {
+    if (isAdminApi) {
+      return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
+    }
+
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -22,5 +35,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/checkout/:path*", "/admin/:path*"],
+  matcher: [
+    "/account/:path*",
+    "/checkout/:path*",
+    "/admin/:path*",
+    "/api/admin/:path*",
+  ],
 };
