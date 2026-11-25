@@ -1,6 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import type { OrderStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/infra/prisma";
+import { expireStaleOrders } from "@/core/modules/order/expiration";
 import {
     calculateTotals,
     effectivePriceCents,
@@ -78,8 +79,8 @@ function toCouponDiscount(coupon: {
 export async function getCart(
     userId: string,
     db: Prisma.TransactionClient = prisma,
+    now: Date = new Date(),
 ): Promise<CartView> {
-    const now = new Date();
 
     const cart = await db.shoppingCart.findUnique({
         where: { userId },
@@ -136,6 +137,8 @@ export async function getCart(
 }
 
 export async function addToCart(userId: string, variantId: string): Promise<AddToCartResult> {
+    // Reservas vencidas seguram chaves: libera antes de olhar o estoque.
+    await expireStaleOrders();
     const variant = await prisma.productVariant.findFirst({
         where: { id: variantId, status: "PUBLISHED" },
         select: { keys: { where: { status: "AVAILABLE" }, take: 1, select: { id: true } } },

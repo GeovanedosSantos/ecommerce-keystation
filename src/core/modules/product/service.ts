@@ -1,6 +1,7 @@
 import { Category, Prisma } from "@/generated/prisma/client";
 import { KeyStatus, ProductStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/infra/prisma";
+import { expireStaleOrders } from "@/core/modules/order/expiration";
 import {
     ConflictError,
     NotFoundError,
@@ -146,6 +147,7 @@ export async function getPublishedEditions(
 
 // `take: 1` aninhado num findMany de várias variants não vira LIMIT no SQL; findFirst por variant vira.
 async function variantIdsInStock(variantIds: string[]): Promise<Set<string>> {
+    await expireStaleOrders();
     const keys = await Promise.all(
         variantIds.map((variantId) =>
             prisma.key.findFirst({
