@@ -23,7 +23,13 @@ function getSectionLabel(pathname: string): string {
   return "Visão geral";
 }
 
-export function AdminShell({ children }: { children: ReactNode }) {
+export function AdminShell({
+  children,
+  adminLabel = "Administrador",
+}: {
+  children: ReactNode;
+  adminLabel?: string;
+}) {
   const pathname = usePathname();
   const isOverview = pathname === "/admin";
   const isGames = pathname.startsWith("/admin/games");
@@ -133,7 +139,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </span>
           </nav>
 
-          <span className={styles.adminBadge}>Administrador · RC</span>
+          <span className={styles.adminBadge}>{adminLabel}</span>
         </header>
 
         {children}

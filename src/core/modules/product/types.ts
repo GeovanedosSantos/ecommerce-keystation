@@ -1,7 +1,52 @@
 import type { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
-import { ProductStatus } from "@/generated/prisma/enums";
+import { Category, ProductStatus } from "@/generated/prisma/enums";
 import type { updateProductSchema } from "./schema";
+
+export type AdminProductVariantItem = {
+    id: string;
+    platformId: string;
+    platformName: string;
+    price: number;
+    status: ProductStatus;
+    releaseDate: string;
+    availableKeys: number;
+    totalKeys: number;
+};
+
+export type AdminProductListItem = {
+    id: string;
+    title: string;
+    slug: string;
+    category: Category;
+    developer: string | null;
+    coverPath: string | null;
+    genres: { id: string; name: string }[];
+    variants: AdminProductVariantItem[];
+};
+
+export type AdminProductDetail = {
+    id: string;
+    title: string;
+    slug: string;
+    category: Category;
+    description: string;
+    developer: string | null;
+    publisher: string | null;
+    coverPath: string | null;
+    baseProductId: string | null;
+    genres: { id: string; name: string }[];
+    gallery: { path: string; position: number }[];
+    variants: (AdminProductVariantItem & {
+        keyStats: { available: number; reserved: number; sold: number };
+    })[];
+};
+
+export type CatalogOptions = {
+    genres: { id: string; name: string }[];
+    platforms: { id: string; name: string; hasSystemRequirements: boolean }[];
+    baseGames: { id: string; title: string; slug: string }[];
+};
 
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 

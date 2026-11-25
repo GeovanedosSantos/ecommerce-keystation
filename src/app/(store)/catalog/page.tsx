@@ -16,7 +16,7 @@ import { CatalogQueryProvider } from "./CatalogQueryContext";
 import { CatalogSearch } from "./CatalogSearch/CatalogSearch";
 import { getCatalogFacetsCached } from "./data";
 import { toGameCard, toResultsLabel } from "./mapper";
-import { Pagination } from "./Pagination/Pagination";
+import { Pagination } from "./Pagination/pagination";
 import { catalogHref } from "./url";
 import { SortSelect } from "./SortSelect/SortSelect";
 import styles from "./catalog.module.css";

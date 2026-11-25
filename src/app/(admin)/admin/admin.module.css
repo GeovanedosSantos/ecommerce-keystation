@@ -863,6 +863,255 @@
   gap: 0.5rem;
 }
 
+.errorBanner {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #FCA5A5;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Listagem CRUD de Jogos */
+.toolbarRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.searchInputWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+  max-width: 420px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.7rem 0.95rem 0.7rem 2.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--secondary);
+}
+
+.gameCell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.gameThumb {
+  width: 56px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.gameCellInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.gameTitleLink {
+  color: var(--text-main);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gameTitleLink:hover {
+  color: var(--secondary);
+}
+
+.gameMetaSub {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+.actionGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.iconActionBtn:hover:not(:disabled) {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.dangerActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #F87171;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dangerActionBtn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: #EF4444;
+}
+
+.emptyState {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Chips de gêneros, upload e chaves em lote */
+.genreChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.genreChip {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.genreChip:hover {
+  border-color: var(--secondary);
+  color: var(--text-main);
+}
+
+.genreChipSelected {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: var(--primary);
+  color: #FFFFFF;
+}
+
+.urlImportRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.secondarySmallBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.secondarySmallBtn:hover:not(:disabled) {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.coverBadgeTag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.imageActionGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.keyStatsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.keyStatPill {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.keyStatPill strong {
+  color: var(--text-main);
+  margin-left: 0.25rem;
+}
+
+.keysSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.fieldError {
+  font-size: 0.78rem;
+  color: #F87171;
+}
+
 .cancelActionBtn:hover {
   color: var(--text-main);
   border-color: #64748B;
