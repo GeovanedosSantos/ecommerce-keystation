@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { paginationItems } from "./pagination";
+import { paginationItems } from "./paginationItems";
 
 describe("paginationItems", () => {
   it.each([

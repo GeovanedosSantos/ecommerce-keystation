@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { CatalogQuery } from "@/core/modules/catalog/schema";
 import { catalogHref } from "../url";
-import { paginationItems } from "./pagination";
+import { paginationItems } from "./paginationItems";
 import styles from "./Pagination.module.css";
 
 type PaginationProps = { query: CatalogQuery; page: number; pageCount: number };
