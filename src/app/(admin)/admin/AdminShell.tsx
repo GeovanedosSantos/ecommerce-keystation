@@ -89,24 +89,6 @@ export function AdminShell({
               <ReceiptText size={18} />
               <span>Pedidos</span>
             </Link>
-
-            {/* 4. Estoque de chaves (ignorado/desabilitado conforme solicitado) */}
-            <div
-              className={`${styles.navItem} ${styles.navItemDisabled}`}
-              title="Seção ignorada conforme diretriz"
-            >
-              <KeyRound size={18} />
-              <span>Estoque de chaves</span>
-            </div>
-
-            {/* 5. Configurações (ignorado/desabilitado conforme solicitado) */}
-            <div
-              className={`${styles.navItem} ${styles.navItemDisabled}`}
-              title="Seção ignorada conforme diretriz"
-            >
-              <Settings size={18} />
-              <span>Configurações</span>
-            </div>
           </nav>
         </div>
 
