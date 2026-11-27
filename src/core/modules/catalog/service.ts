@@ -1,3 +1,4 @@
+import { expireStaleOrders } from "@/core/modules/order/expiration";
 import { normalizeSearchText } from "@/utils/formatter/search-text";
 import { slugify } from "@/utils/formatter/slugify";
 import {
@@ -85,6 +86,9 @@ export async function searchCatalog(
     query: CatalogQuery,
     now: Date = new Date(),
 ): Promise<CatalogPage> {
+    // Reservas vencidas seguram chaves: libera antes de contar o estoque.
+    await expireStaleOrders();
+
     const [genres, platforms] = await Promise.all([
         matchSlugs(query.genres, selectAllGenres),
         matchSlugs(query.platforms, selectAllPlatforms),

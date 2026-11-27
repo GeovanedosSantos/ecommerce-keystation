@@ -187,6 +187,15 @@ Os testes usam **Vitest** e ficam em `src/`, ao lado do código que testam.
 - Use `crypto.randomUUID()` para ids inexistentes: o `z.uuid()` recusa ids inválidos como `"123"`.
 - Um teste que falha por um bug real deve levar à correção do código, nunca ao afrouxamento da asserção.
 
+### 6.4. O que testar (e o que não testar)
+Teste regra de negócio, validação e comportamento que pode quebrar sem ninguém perceber. Não escreva testes só para aumentar a quantidade.
+- **Não crie** testes para: componentes só de apresentação, CSS, wiring de Server Actions/páginas, getters/mappers triviais, nem para código que apenas repassa dados.
+- **Sem redundância:** não repita no service o que o `schema.test.ts` já cobre, nem num helper o que o helper que ele usa já cobre (ex: o schema não precisa reexaminar cada caso do validador de CPF).
+- **Um caso por regra:** em `it.each`, mantenha só os casos que exercitam caminhos diferentes (válido, cada tipo de inválido, bordas). Entradas equivalentes (vazio e curto demais, "12" e "13") não precisam de linhas separadas.
+- **Um teste por comportamento:** não separe em vários testes asserções do mesmo cenário, e não crie um teste para uma situação que outro já cobre (ex: o mesmo caso feliz repetido com dados quase idênticos). Concorrência e idempotência de pagamento são exceção: cada cenário real (mesma chave, chaves diferentes, outro pedido) merece o próprio teste.
+- Antes de adicionar um teste, pergunte: "que bug real este teste pegaria que os outros não pegam?". Se não houver resposta, não o crie.
+- Ao alterar código, atualize ou remova os testes que ficaram obsoletos em vez de empilhar novos.
+
 ---
 
 ## 7. Comandos e Scripts Úteis

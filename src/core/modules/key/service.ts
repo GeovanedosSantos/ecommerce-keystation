@@ -101,7 +101,9 @@ export async function getVariantKeyStats(
   for (const row of grouped) {
     if (row.status === KeyStatus.AVAILABLE) stats.available = row._count._all;
     else if (row.status === KeyStatus.RESERVED) stats.reserved = row._count._all;
-    else if (row.status === KeyStatus.SOLD) stats.sold = row._count._all;
+    else if (row.status === KeyStatus.SOLD || row.status === KeyStatus.REVEALED) {
+      stats.sold += row._count._all;
+    }
   }
 
   return stats;
